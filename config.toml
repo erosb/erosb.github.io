@@ -1,0 +1,5 @@
+baseurl = "/"
+languageCode = "en-us"
+title = "erosb"
+buildDrafts = true
+theme = "heather-hugo"
