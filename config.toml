@@ -1,5 +1,6 @@
 baseurl = "/"
-languageCode = "en-us"
-title = "erosb"
+languageCode = "en-gb"
+title = "just another blog about software engineering"
 buildDrafts = true
 theme = "heather-hugo"
+publishdir = "../public"
