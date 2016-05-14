@@ -1,0 +1,22 @@
+{{ partial "header.html" . }}
+<main class="posts">
+  <article class="post">
+    {{ range (where .Data.Pages "Type" "post") }}
+      <h1><a href="{{ .Permalink }}">{{ .Title }}</a></h1>
+      <p>{{ .Summary }}</p>
+      <p class="small">
+      {{ .Date.Format "Jan 02, 2006"}}
+      {{ if .Truncated }}
+      <a class="pull-right" href="{{ .Permalink }}">
+        {{ if isset .Site.Params "readMoreLabel" }}
+            {{ .Site.Params.readMoreLabel }}
+          {{ else }}
+            Read more »
+          {{ end }}
+          </a>
+      {{ end }}
+    </p>
+    {{ end }}
+  </article>
+</main>
+{{ partial "footer.html" . }}

@@ -1,0 +1,19 @@
+# theme.toml template for a Hugo theme
+# See https://github.com/spf13/hugoThemes#themetoml for an example
+
+name = "Hugo template of erosb.github.io"
+license = "MIT"
+licenselink = "https://github.com/erosb/erosb-hugo-theme/blob/master/LICENSE.md"
+description = ""
+tags = ["blog", "simple"]
+min_version = 0.14
+
+[author]
+  name = "Bence Erős"
+  homepage = "http://erosb.github.io"
+
+# If porting an existing theme
+[original]
+  name = ""
+  homepage = ""
+  repo = ""

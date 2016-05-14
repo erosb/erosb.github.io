@@ -1,6 +1,6 @@
 baseurl = "/"
 languageCode = "en-gb"
 title = "just another blog about software engineering"
-buildDrafts = true
-theme = "heather-hugo"
+buildDrafts = false
+theme = "erosb-github"
 publishdir = "../public"
