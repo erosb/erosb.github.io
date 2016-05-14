@@ -1,6 +1,10 @@
-/* Styles for Heather - A Hyperminimal Jekyll Theme */
 
-/* BASSCSS Reset - http://jxnblk.github.io/basscss */
+@font-face {
+    font-family: Bookerly;
+    src: url(./Bookerly-Regular.ttf);
+}
+
+
 body, h1, h2, h3, h4, h5, h6, dl, ol, ul, p,
 button, input, select, textarea {
   margin: 0;
@@ -30,7 +34,7 @@ h1, .h1 {
   font-size: 32px;
   margin-bottom: 32px;
 }
-h2, .h2, h3, .h3, h4, h5, h6 { 
+h2, .h2, h3, .h3, h4, h5, h6 {
   font-size: 24px;
   margin-bottom: 16px;
 }
@@ -72,3 +76,15 @@ footer p,
 
 .gray { color: #999; }
 
+
+.page-links {
+  width: 100%;
+  text-align: right;
+  align: right;
+}
+
+
+body {
+  font-family: Bookerly;
+  text-align: justify;
+}

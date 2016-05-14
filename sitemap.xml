@@ -3,13 +3,17 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2016-05-03T10:51:01+02:00</lastmod>
+    <lastmod>2016-05-14T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/post/hello-world/</loc>
-    <lastmod>2016-05-03T10:51:01+02:00</lastmod>
+    <loc>/post/json-patch-vs-merge-patch/</loc>
+    <lastmod>2016-05-14T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/page/hello/</loc>
   </url>
   
 </urlset>
