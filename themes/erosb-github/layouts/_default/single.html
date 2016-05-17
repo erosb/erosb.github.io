@@ -6,4 +6,18 @@
   <p class="small gray"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 02, 2006" }}</time></p>
 </article>
 </main>
+
+<div id="disqus_thread"></div>
+<script>
+    (function() {  
+        var d = document, s = d.createElement('script');
+        
+        s.src = '//erosb-github.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
 {{ partial "footer.html" . }}
