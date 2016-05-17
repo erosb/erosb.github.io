@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en-gb">
+<head>
+  <meta charset="utf-8">
+  <title>just another blog about software engineering</title>
+  <meta name="author" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="icon" href="/favicon.png" />
+  <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png" />
+
+  
+  <link rel="stylesheet" href="/css/stylesheet.css" />
+  
+  
+
+</head>
+
+<body class="">
+  
+
+  <div class="wrap">
+    
+    <header class="mb">
+      <h1 class="h2 m-0"><a href="/">just another blog about software engineering</a></h1>
+      <p class="site-description"></p>
+    </header>
+
+<main>
+<article class="post">
+  <h1><a href="/post/01-json-patch-vs-merge-patch/" title="JSON Patch and JSON Merge Patch">JSON Patch and JSON Merge Patch</a></h1>
+  
+
+<p>Partly as a side effect of the <code>PATCH</code> HTTP verb gaining attention in the recent years, people started to come up
+with ideas about representing JSON-driven PATCH formats which declaratively describe differences between two JSON documents.
+The number or home-grew solutions is probably countless, two formats have been published by IETF as RFC documents to solve
+this problem: <a href="https://tools.ietf.org/html/rfc6902">RFC 6902 (JSON Patch)</a> and
+<a href="https://tools.ietf.org/html/rfc7386">RFC 7396 (JSON Merge Patch)</a>. Both have advantages and disadvantages, and none of
+them will fit everybody&rsquo;s usecases, so lets have a quick look at which one to use.
+<!-- more --></p>
+
+<h2 id="json-patch:51af82046e51238dd08a7a89118d463c">JSON Patch</h2>
+
+<p>The JSON Patch format is similar to a database transaction: it is an array of mutating operations on a JSON document,
+which is executed atomically by a proper implementation. It is basically a series of <code>&quot;add&quot;</code>, <code>&quot;remove&quot;</code>, <code>&quot;replace&quot;</code>,
+<code>&quot;move&quot;</code> and <code>&quot;copy&quot;</code> operations.</p>
+
+<p>As a short example lets consider the following JSON document:</p>
+
+<pre><code>{
+	&quot;users&quot; : [
+		{ &quot;name&quot; : &quot;Alice&quot; , &quot;email&quot; : &quot;alice@example.org&quot; },
+		{ &quot;name&quot; : &quot;Bob&quot; , &quot;email&quot; : &quot;bob@example.org&quot; }
+	]
+}
+
+</code></pre>
+
+<p>We can run the following patch on it, which changes Alice&rsquo;s email address then adds a new element to the array:</p>
+
+<pre><code>[
+	{
+		&quot;op&quot; : &quot;replace&quot; ,
+		&quot;path&quot; : &quot;/users/0/email&quot; ,
+		&quot;value&quot; : &quot;alice@wonderland.org&quot;
+	},
+	{
+		&quot;op&quot; : &quot;add&quot; ,
+		&quot;path&quot; : &quot;/users/-&quot; ,
+		&quot;value&quot; : {
+			&quot;name&quot; : &quot;Christine&quot;,
+			&quot;email&quot; : &quot;christine@example.org&quot;
+		}
+	}
+]
+
+</code></pre>
+
+<p>The result will be:</p>
+
+<pre><code>{
+	&quot;users&quot; : [
+		{ &quot;name&quot; : &quot;Alice&quot; , &quot;email&quot; : &quot;alice@wonderland.org&quot; },
+		{ &quot;name&quot; : &quot;Bob&quot; , &quot;email&quot; : &quot;bob@example.org&quot; },
+		{ &quot;name&quot; : &quot;Christine&quot; , &quot;email&quot; : &quot;christine@example.org&quot; }
+	]
+}
+
+</code></pre>
+
+<p>So the outline of the operations described in a JSON Patch is</p>
+
+<ul>
+<li>the <code>&quot;op&quot;</code> key denotes operation</li>
+<li>the arguments of the operation are described by the other keys</li>
+<li>there is always a <code>&quot;path&quot;</code> argument, which is JSON Pointer pointing to the document fragment which is the target of the operation</li>
+</ul>
+
+<p>An interesting option of the JSON Patch specification is its <code>&quot;test&quot;</code> operator: its evaluation doesn&rsquo;t come with any side
+effects, so it isn&rsquo;t a data manipulating operator. Instead it can be used to describe assertions on the document at
+given points of the JSON Patch execution. If the <code>&quot;test&quot;</code> evaluates to false then an error occurs, subsequent operations
+won&rsquo;t be executed, and the document is rolled back to its initial state. I think the <code>&quot;test&quot;</code> can be useful for checking
+preconditions before a patch execution or may be a safety net to check at the end of execution if everything looks all
+right. Patches are run atomically by implementations therefore if a <code>&quot;test&quot;</code> finds inconsistency in the document then you can
+safely assume that the document is still in consistent (initial) state after patch failure.</p>
+
+<h2 id="json-merge-patch:51af82046e51238dd08a7a89118d463c">JSON Merge Patch</h2>
+
+<p>Alongside JSON Patch there is an other JSON-based format, <a href="https://tools.ietf.org/html/rfc7386">JSON Merge Patch - RFC 7386</a> ,
+which can be used more or less for the same purpose, ie. it describes a changed version of a JSON document. The conceptual
+difference compared to JSON Patch is that JSON Merge Patch is similar to a diff file. It simply contains the nodes of the
+document which should be different after execution.</p>
+
+<p>As a quick example (<a href="https://tools.ietf.org/html/rfc7386#section-1">taken from the spec</a>) if we have the following document:</p>
+
+<pre><code>{
+	&quot;a&quot;: &quot;b&quot;,
+	&quot;c&quot;: {
+		&quot;d&quot;: &quot;e&quot;,
+		&quot;f&quot;: &quot;g&quot;
+	}
+}
+</code></pre>
+
+<p>Then we can run the following patch on it:</p>
+
+<pre><code>{
+	&quot;a&quot;:&quot;z&quot;,
+	&quot;c&quot;: {
+		&quot;f&quot;: null
+	}
+}
+
+</code></pre>
+
+<p>which will change the value of <code>&quot;a&quot;</code> to <code>&quot;z&quot;</code> and will delete the <code>&quot;f&quot;</code> key.</p>
+
+<p>The simplicity of the format may look first promising at the first glance, since most probably anyone understanding
+the schema of the original document will also instantly understand a merge patch document too. It is just a standardization
+of one may naturally call a patch of a JSON document.</p>
+
+<p>But this simplicity comes with some limitations:</p>
+
+<ul>
+<li>Deletion happens by setting a key to <code>null</code>. This inherently means that it isn&rsquo;t possible to change a key&rsquo;s value to
+<code>null</code>, since such modification cannot be described by a merge patch document.</li>
+<li>Arrays cannot be manipulated by merge patches. If you want to add an element to an array, or mutate any of its elements
+then you have to include the entire array in the merge patch document, even if the actually changed parts is minimal.</li>
+<li>the execution of a merge patch document never results in error. Any malformed patch will be merged, so it is a very liberal
+format. It is not necessarily good, since you will probably need to perform programmatic check after merge, or run a JSON
+Schema validation after the merge.</li>
+</ul>
+
+<h2 id="summary:51af82046e51238dd08a7a89118d463c">Summary</h2>
+
+<p>JSON Merge Patch is a naively simple format, with limited usability. Probably it is a good choice if you are building something
+small, with very simple JSON Schema, but you want offer a quickly understandable, more or less working method for clients
+to update JSON documents. A REST API designed for public consumption but without appropriate client libraries might be
+a good example.</p>
+
+<p>For more complex usecases I&rsquo;d pick JSON Patch, since it is applicable to any JSON documents (unline merge patch, which is
+not able to set keys to <code>null</code>). The specification also ensures atomic execution and robust error reporting.</p>
+
+  <p class="small gray"><time datetime="2016-05-14">May 14, 2016</time></p>
+</article>
+</main>
+
