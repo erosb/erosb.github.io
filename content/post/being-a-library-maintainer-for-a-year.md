@@ -1,11 +1,12 @@
 +++
 title = "Being a library maintainer for a year"
-date = "2016-09-30"
+date = "2016-10-16"
 draft = false
 
 +++
 
 A year passed since the first public version of the [`everit-org/json-schema`](http://github.com/everit-org/json-schema) library was published on maven central. I think it may be interesting to look back for a summary of what I learned during this year.
+<!-- more -->
 
 This started out as an unimportant side-project, basically I was simply bored on a Friday evening, and I looked for something to hack.
 I started getting familiar with JSON Schema a few weeks before. I had some concerns with the existing java implementation of the specification, and
