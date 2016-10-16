@@ -1,13 +1,51 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>just another blog about software engineering</title>
-    <link>/</link>
-    <description>Recent content on just another blog about software engineering</description>
+    <title>@erosb about software</title>
+    <link>/index.xml</link>
+    <description>Recent content on @erosb about software</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Sat, 14 May 2016 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 30 Sep 2016 00:00:00 +0000</lastBuildDate>
     <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Being a library maintainer for a year</title>
+      <link>/post/being-a-library-maintainer-for-a-year/</link>
+      <pubDate>Fri, 30 Sep 2016 00:00:00 +0000</pubDate>
+      
+      <guid>/post/being-a-library-maintainer-for-a-year/</guid>
+      <description>
+
+&lt;p&gt;A year passed since the first public version of the &lt;a href=&#34;http://github.com/everit-org/json-schema&#34;&gt;&lt;code&gt;everit-org/json-schema&lt;/code&gt;&lt;/a&gt; library was published on maven central. I think it may be interesting to look back for a summary of what I learned during this year.&lt;/p&gt;
+
+&lt;p&gt;This started out as an unimportant side-project, basically I was simply bored on a Friday evening, and I looked for something to hack.
+I started getting familiar with JSON Schema a few weeks before. I had some concerns with the existing java implementation of the specification, and
+also the schema spec didn&amp;rsquo;t look too difficult, so I thought &amp;ldquo;why not&amp;rdquo;. I started working on a new implementation.&lt;/p&gt;
+
+&lt;p&gt;Now, one year later I don&amp;rsquo;t work for Everit anymore and I don&amp;rsquo;t use the library for any of my current projects. Still I keep maintaining it. You may wonder what makes a library interesting if it is not even closely related to my job, so I make no use of it.&lt;/p&gt;
+
+&lt;p&gt;The most important factor is attention. It is not a very popular library, but still there are a good number of people using it. Userbase matters. Feedback matters, regardless if it is the number of bugreports, pull requests, stars or daily visitors of the GitHub project page. Seeing the value provided by the library is the primary thing that keeps me going on and improving it. We, software engineers, work in an industry where approx. 70% of the projects fail - and such failure happened to me too multiple times in the recent years. After spending countless hours on working on software that never made it to production, it is just stirring to see that this library provides some value for people. This is the #1 reason why I work on it.&lt;/p&gt;
+
+&lt;p&gt;Since its initial release the library gained a lot of attention. Nowadays it isn&amp;rsquo;t simply used by big companies but also utilized by open-source projects like &lt;a href=&#34;https://github.com/SoftInstigate/restheart&#34;&gt;RESTHeart&lt;/a&gt;, &lt;a href=&#34;https://github.com/zalando/nakadi&#34;&gt;Nakadi&lt;/a&gt; or &lt;a href=&#34;https://github.com/apache/nifi&#34;&gt;Apache NiFi&lt;/a&gt;. Yet another thing I&amp;rsquo;m very happy about.&lt;/p&gt;
+
+&lt;p&gt;An other noteworthy motive is the technical &amp;ldquo;fun factor&amp;rdquo;. This started out as one of the first projects in which I can facilitate Java8 language features, and the elegance of multiparadigm programming means a level of convenience that is motivational on its own.&lt;/p&gt;
+
+&lt;h2 id=&#34;lessons-learnt&#34;&gt;Lessons learnt&lt;/h2&gt;
+
+&lt;p&gt;The most important thing I recognized during the last year is that one can never underestimate the importance of backward-compatibility. Although the library has nearly doubled in lines of code since its first stable version, the most simple usecase supported that time still works as it is put in the &lt;a href=&#34;https://github.com/everit-org/json-schema#quickstart&#34;&gt;quickstart guide&lt;/a&gt;. Version 1.0.0 literally didn&amp;rsquo;t know anything else, just a single method performing a schema validation.&lt;/p&gt;
+
+&lt;p&gt;Of course, the backward-compatibility of the external interface sometimes requires crazy hacks for the internal implementation. But being able to live together with earlier bad design decisions while also delivering new features and bugfixes is just essential if you want your library to be taken seriously. Also, incrementing major version number all the time, just to be permitted to break the API in the name of semantic versioning (and not maintaining earlier versions), is just a very little better than directly breaking the API. Reliability comes from long-term support of compatible versions. This is an essential treshold for any library which is willing to gain attention, therefore should be kept in mind by library developers. As once Linus Torvalds wrote &lt;a href=&#34;https://plus.google.com/115250422803614415116/posts/hMT5kW8LKJk&#34;&gt;&amp;rdquo;&amp;lsquo;we need to do that to improve things&amp;rsquo; is not an excuse&amp;rdquo;&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;An other thing I learnt - slightly related to the previous one - is the value of member visibilities. When someone is arguing about why Java has quite baroque visibility rules, he/she will probably come up with reasons like why the client should be considered &amp;ldquo;stupid&amp;rdquo;, how unwanted usage of an API can cause harmful and mysterious bugs, and many other ways of saying that &lt;em&gt;the client shouldn&amp;rsquo;t see this because the client is stupid&lt;/em&gt; . Such reasoning is likely to be felt weak, or even arrogant, and it usually doesn&amp;rsquo;t take too much time until a python guy tells that he never bit himself with python&amp;rsquo;s everything-is-public approach, pointing out the unimportance of defending the client.&lt;/p&gt;
+
+&lt;p&gt;In fact a much more important value that I only understood while working on &lt;code&gt;everit-org/json-schema&lt;/code&gt; is the other direction of protectiveness of visibility rules: it doesn&amp;rsquo;t protect the client from making stupid things, instead &lt;em&gt;it protects the library author from the necessity of maintaining compatibility&lt;/em&gt;. Simply put, if a method is &lt;code&gt;private&lt;/code&gt; (or package-private), I can be sure about that no client code relies on it, therefore I&amp;rsquo;m free to change its behavior, change its name or signature, or I can even remove it. By not exposing it publicly I give myself space and freedom to change it, and over the last one year I found this a much more serious benefit of visibility than protecting clients from directly invoking internal methods.&lt;/p&gt;
+
+&lt;p&gt;Keeping visibility rules in mind is not the only considerable strategy to maintain backward-compatibility. An other thing I found quite useful is not going super-small in library size. Sometimes I can feel that in newer platform ecosystems - especially the ones which consider automated package management as a core feature - a re-occurring problem is that people break up their solutions into too small libraries. It is basically about utilizing the presence of the automated package management and taking a &lt;em&gt;&amp;ldquo;lets go extremely small so clients won&amp;rsquo;t have to include any code that they don&amp;rsquo;t need&amp;rdquo;&lt;/em&gt; approach. This is a wise idea, but it has a harmful side-effect: very small libraries performing a very small piece of job are simply not maintainable. Since they don&amp;rsquo;t really have a massive internal layer which can be a subject of refactoring, small libraries can&amp;rsquo;t adopt, therefore they will go unmaintained, deprecated, or will break compatibility &lt;a href=&#34;https://medium.com/@wob/the-sad-state-of-web-development-1603a861d29f#.c4yplz2xj&#34;&gt;even on a patch level change&lt;/a&gt;. So for library authors I&amp;rsquo;d suggest making a healthy and responsible compromise between going extremely monolithic and extremely modular.&lt;/p&gt;
+
+&lt;p&gt;The last but still interesting things is that the Java6/7 compatibility still matters. My code heavily relies on java8 language features and I was somewhat surprised about how lot of people are asking for/about java6 support. I think this problem will become less and less relevant, and the java6 compatibility requirement will just fade away, but still, it was surprising to see.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>JSON Patch and JSON Merge Patch</title>
@@ -25,7 +63,7 @@ this problem: &lt;a href=&#34;https://tools.ietf.org/html/rfc6902&#34;&gt;RFC 69
 them will fit everybody&amp;rsquo;s usecases, so lets have a quick look at which one to use.
 &lt;!-- more --&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;json-patch:b827389c7091ff265f164bd703da07b7&#34;&gt;JSON Patch&lt;/h2&gt;
+&lt;h2 id=&#34;json-patch&#34;&gt;JSON Patch&lt;/h2&gt;
 
 &lt;p&gt;The JSON Patch format is similar to a database transaction: it is an array of mutating operations on a JSON document,
 which is executed atomically by a proper implementation. It is basically a series of &lt;code&gt;&amp;quot;add&amp;quot;&lt;/code&gt;, &lt;code&gt;&amp;quot;remove&amp;quot;&lt;/code&gt;, &lt;code&gt;&amp;quot;replace&amp;quot;&lt;/code&gt;,
@@ -90,7 +128,7 @@ preconditions before a patch execution or may be a safety net to check at the en
 right. Patches are run atomically by implementations therefore if a &lt;code&gt;&amp;quot;test&amp;quot;&lt;/code&gt; finds inconsistency in the document then you can
 safely assume that the document is still in consistent (initial) state after patch failure.&lt;/p&gt;
 
-&lt;h2 id=&#34;json-merge-patch:b827389c7091ff265f164bd703da07b7&#34;&gt;JSON Merge Patch&lt;/h2&gt;
+&lt;h2 id=&#34;json-merge-patch&#34;&gt;JSON Merge Patch&lt;/h2&gt;
 
 &lt;p&gt;Alongside JSON Patch there is an other JSON-based format, &lt;a href=&#34;https://tools.ietf.org/html/rfc7386&#34;&gt;JSON Merge Patch - RFC 7386&lt;/a&gt; ,
 which can be used more or less for the same purpose, ie. it describes a changed version of a JSON document. The conceptual
@@ -137,7 +175,7 @@ format. It is not necessarily good, since you will probably need to perform prog
 Schema validation after the merge.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&#34;summary:b827389c7091ff265f164bd703da07b7&#34;&gt;Summary&lt;/h2&gt;
+&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
 
 &lt;p&gt;JSON Merge Patch is a naively simple format, with limited usability. Probably it is a good choice if you are building something
 small, with very simple JSON Schema, but you want offer a quickly understandable, more or less working method for clients

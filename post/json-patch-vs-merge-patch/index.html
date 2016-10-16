@@ -2,7 +2,7 @@
 <html lang="en-gb">
 <head>
   <meta charset="utf-8">
-  <title>just another blog about software engineering</title>
+  <title>@erosb about software</title>
   <meta name="author" content="">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,7 +24,7 @@
   <div class="wrap">
     
     <header class="mb">
-      <h1 class="h2 m-0"><a href="/">just another blog about software engineering</a></h1>
+      <h1 class="h2 m-0"><a href="/">@erosb about software</a></h1>
       <p class="site-description"></p>
     </header>
 
@@ -41,7 +41,7 @@ this problem: <a href="https://tools.ietf.org/html/rfc6902">RFC 6902 (JSON Patch
 them will fit everybody&rsquo;s usecases, so lets have a quick look at which one to use.
 <!-- more --></p>
 
-<h2 id="json-patch:b827389c7091ff265f164bd703da07b7">JSON Patch</h2>
+<h2 id="json-patch">JSON Patch</h2>
 
 <p>The JSON Patch format is similar to a database transaction: it is an array of mutating operations on a JSON document,
 which is executed atomically by a proper implementation. It is basically a series of <code>&quot;add&quot;</code>, <code>&quot;remove&quot;</code>, <code>&quot;replace&quot;</code>,
@@ -106,7 +106,7 @@ preconditions before a patch execution or may be a safety net to check at the en
 right. Patches are run atomically by implementations therefore if a <code>&quot;test&quot;</code> finds inconsistency in the document then you can
 safely assume that the document is still in consistent (initial) state after patch failure.</p>
 
-<h2 id="json-merge-patch:b827389c7091ff265f164bd703da07b7">JSON Merge Patch</h2>
+<h2 id="json-merge-patch">JSON Merge Patch</h2>
 
 <p>Alongside JSON Patch there is an other JSON-based format, <a href="https://tools.ietf.org/html/rfc7386">JSON Merge Patch - RFC 7386</a> ,
 which can be used more or less for the same purpose, ie. it describes a changed version of a JSON document. The conceptual
@@ -153,7 +153,7 @@ format. It is not necessarily good, since you will probably need to perform prog
 Schema validation after the merge.</li>
 </ul>
 
-<h2 id="summary:b827389c7091ff265f164bd703da07b7">Summary</h2>
+<h2 id="summary">Summary</h2>
 
 <p>JSON Merge Patch is a naively simple format, with limited usability. Probably it is a good choice if you are building something
 small, with very simple JSON Schema, but you want offer a quickly understandable, more or less working method for clients
