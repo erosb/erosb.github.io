@@ -6,8 +6,54 @@
     <description>Recent content in Post-rsses on @erosb about software</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Sun, 16 Oct 2016 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 24 Jan 2017 00:00:00 +0000</lastBuildDate>
     <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>System notifications for Maven on Ubuntu</title>
+      <link>/post/maven-notifications-ubuntu/</link>
+      <pubDate>Tue, 24 Jan 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/post/maven-notifications-ubuntu/</guid>
+      <description>&lt;p&gt;Builds can be slow and sloppy. If your job involves executing maven builds frequently during your work - and if you are a
+java developer than most probably you do so - then you spend significant time on waiting for build jobs.&lt;/p&gt;
+
+&lt;p&gt;Of curse we usually don&amp;rsquo;t just stare at the console, waiting for the maven build to finish, at least because the log messages
+flooding on the screen just harmful for the eyes. Instead we something else in an other window.&lt;/p&gt;
+
+&lt;p&gt;During those (hopefully) short build periods I don&amp;rsquo;t like periodically checking if the build has finished yet, but I want
+to know exactly when it is done. To let myself get notified about it I created a simple wrapper on the top of the &lt;code&gt;mvn&lt;/code&gt;
+command which just pops up a unity system notification on ubuntu after the build. I have been using this utility for
+years, so I thought why not to share it.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;So I put a the script below to &lt;code&gt;~/bin/mvn&lt;/code&gt; and I made sure that &lt;code&gt;~/bin/&lt;/code&gt; precedes the maven installation directory on
+the &lt;code&gt;$PATH&lt;/code&gt; (referred as &lt;code&gt;$MVN_HOME/bin&lt;/code&gt; in the script):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#!/bin/bash
+
+args=&amp;quot;$*&amp;quot;
+$MVN_HOME/bin/mvn $*
+let x=$?
+if [[ $x -eq 0 ]]; then
+    notify-send --urgency=normal -i &amp;quot;face-laugh&amp;quot; &amp;quot;mvn $args success&amp;quot;
+else
+    notify-send --urgency=normal -i &amp;quot;error&amp;quot; &amp;quot;mvn $args failure&amp;quot;
+fi
+
+exit $x
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This wrapper script runs the real &lt;code&gt;mvn&lt;/code&gt; executable then displays a success or error notification depending on maven&amp;rsquo;s exit
+code, in the top-right corner of the screen. They look like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/mvn-success.png&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/mvn-failure.png&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The same trick will probably work for any build tools, since all you need is a command to be wrapped.&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Being a library maintainer for a year</title>
