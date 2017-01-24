@@ -15,7 +15,7 @@ flooding on the screen just harmful for the eyes. Instead we something else in a
 During those (hopefully) short build periods I don't like periodically checking if the build has finished yet, but I want
 to know exactly when it is done. To let myself get notified about it I created a simple wrapper on the top of the `mvn`
 command which just pops up a unity system notification on ubuntu after the build. I have been using this utility for
-years, so I thought why not to share it.
+years, maybe it will be useful for others too.
 
 <!--more-->
 
