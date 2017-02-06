@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en-gb">
+<head>
+  <meta charset="utf-8">
+  <title>@erosb about software</title>
+  <meta name="author" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="icon" href="/favicon.png" />
+  <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png" />
+
+  
+  <link rel="stylesheet" href="/css/stylesheet.css" />
+  
+  
+
+</head>
+
+<body class="">
+  
+
+  <div class="wrap">
+    
+    <header class="mb">
+      <h1 class="h2 m-0"><a href="/">@erosb about software</a></h1>
+      <p class="site-description"></p>
+    </header>
+
+<main>
+<article class="post">
+  <h1><a href="/post/docker-containers-in-conky/" title="Displaying Docker containers in Conky">Displaying Docker containers in Conky</a></h1>
+  <p>After using Docker over a couple of months for managing a development environment locally, I felt a bit tired of repeatedly
+checking the status of the  containers several times each day. So I looked after how can I display the current status of
+the containers in the Conky system monitor.</p>
+
+<p></p>
+
+<p>It turned out that Conky doesn&rsquo;t support Docker out of the box, but it is customizable with its <code>exec</code>-like commands. So
+I started looking after what is the best solution I can achieve from the shell. One option would be to call <code>docker ps</code>
+then alter its output using <code>awk</code> or <code>sed</code> to extract the information I want to see in Conky. But I wanted a bit cleaner
+approach than that, so I decided to use the Python client library to list the containers. The REST API of the docker engine
+provides all information one will ever need in JSON format, so picking a client library which uses the REST API seemed to
+be a good way to go. I chose python, because it is installed on most linux systems by default, so there is no need to install
+any additional language runtime or compiler to run the script.</p>
+
+<p>I installed the client library with <code>sudo pip install docker</code>, then I put the following (executable) python script to <code>/home/erosb/bin/docker-status.py</code>:</p>
+
+<pre><code>#!/usr/bin/env python
+
+import docker
+client = docker.from_env()
+for container in client.containers.list():
+  print '{:40} {}'.format(container.attrs['Config']['Image'], container.status)
+</code></pre>
+
+<p>And finally I added this single line to my <code>.conkyrc</code>:</p>
+
+<p><code>${exec /home/erosb/bin/docker-status.py}</code></p>
+
+<p>Voila! It just works.</p>
+  <p class="small gray"><time datetime="2017-02-06">Feb 06, 2017</time></p>
+</article>
+</main>
+
+<div id="disqus_thread"></div>
+<script>
+    (function() {  
+        var d = document, s = d.createElement('script');
+        
+        s.src = '//erosb-github.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-77857661-1', 'auto');
+  ga('send', 'pageview');
+</script>
+

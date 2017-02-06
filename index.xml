@@ -6,8 +6,45 @@
     <description>Recent content on @erosb about software</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <lastBuildDate>Tue, 24 Jan 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 06 Feb 2017 00:00:00 +0000</lastBuildDate>
     <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Displaying Docker containers in Conky</title>
+      <link>/post/docker-containers-in-conky/</link>
+      <pubDate>Mon, 06 Feb 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/post/docker-containers-in-conky/</guid>
+      <description>&lt;p&gt;After using Docker over a couple of months for managing a development environment locally, I felt a bit tired of repeatedly
+checking the status of the  containers several times each day. So I looked after how can I display the current status of
+the containers in the Conky system monitor.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;It turned out that Conky doesn&amp;rsquo;t support Docker out of the box, but it is customizable with its &lt;code&gt;exec&lt;/code&gt;-like commands. So
+I started looking after what is the best solution I can achieve from the shell. One option would be to call &lt;code&gt;docker ps&lt;/code&gt;
+then alter its output using &lt;code&gt;awk&lt;/code&gt; or &lt;code&gt;sed&lt;/code&gt; to extract the information I want to see in Conky. But I wanted a bit cleaner
+approach than that, so I decided to use the Python client library to list the containers. The REST API of the docker engine
+provides all information one will ever need in JSON format, so picking a client library which uses the REST API seemed to
+be a good way to go. I chose python, because it is installed on most linux systems by default, so there is no need to install
+any additional language runtime or compiler to run the script.&lt;/p&gt;
+
+&lt;p&gt;I installed the client library with &lt;code&gt;sudo pip install docker&lt;/code&gt;, then I put the following (executable) python script to &lt;code&gt;/home/erosb/bin/docker-status.py&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#!/usr/bin/env python
+
+import docker
+client = docker.from_env()
+for container in client.containers.list():
+  print &#39;{:40} {}&#39;.format(container.attrs[&#39;Config&#39;][&#39;Image&#39;], container.status)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And finally I added this single line to my &lt;code&gt;.conkyrc&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;${exec /home/erosb/bin/docker-status.py}&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Voila! It just works.&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>System notifications for Maven on Ubuntu</title>
