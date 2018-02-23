@@ -1,0 +1,435 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Java8 training</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/sky.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h1>Java 8 training</h1>
+				</section>
+				<section id="agenda" data-markdown>
+					<script type="text/template">
+						## Agenda
+						
+						* [Interface improvements](#interface-improvements)
+						* [Lambdas](#lambdas)
+						* [Stream API](#stream-api)
+						* [Optionals](#optionals)
+						
+						
+	git clone https://github.com/erosb/java8-training.git
+						
+					</script>
+				</section>
+				<section id="interface-improvements">
+					<section data-markdown>
+					<script type="text/template">
+						### Default implementations in interfaces
+						
+						* interfaces can contain default implementations of their methods
+						* the syntax of implementations is slightly different than in classes
+						* interfaces can contain static methods, but these must be implemented
+						* interface methods must be public
+						* still no data members in interfaces
+						* cannot be final, cannot override the def. impl. of any parent interface, so it has some limitations
+					</script>
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+						### Common usecases for default methods
+						
+						In Java7 the following is a commmon design pattern:
+						* we create an `IWhatever` interface which is supposed to have more than one concrete implementation
+						* if the implementations are likely to have some common behavior then we create an `AbstractWhatever`
+							class with the common method implementations
+						* all concrete implementations extend the `AbstractWhatever class`  
+						
+						In Java8 the class hierarchy can be flattened with default implementations
+					</script>
+					</section>
+					
+					<section>
+						<h3>IWhatever in Java7</h3>
+						<img src="./iwhatever-java7.png" />
+					</section>
+					
+					<section>
+						<h3>IWhatever in Java8</h3>
+						<img src="./iwhatever-java8.png" />
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+						### Examples
+						
+					
+	interface DefaultImpl {
+	
+		static void myStaticMethod() {
+			System.out.println("DefaultImpl.myStaticMethod()");
+		}
+	
+		// static void myAbstractStaticMethod();
+	
+		void myAbstractMethod();
+	
+		default void myMethod() {
+			System.out.println("DefaultImpl.myMethod()");
+		}
+	
+		default void myMethod2() {
+			System.out.println("DefaultImpl.myMethod2()");
+		}
+
+	}
+					
+					</script>
+					</section>
+					
+				</section>
+				
+				<section>
+					<section  id="lambdas" data-markdown>
+						<script type="text/template">
+							## Functional interfaces
+							
+							* it is an interface with exactly 1 abstract method
+							* it is called "functional" because an implementation of
+								a func. intf. can be modeled as a function - the implementation of its
+								single abstract method
+							* this is how java8 becomes a multi-paradigm programming language (both OO and functional)
+							* the stream API heavily uses functional interfaces
+							* `@FunctionalInterface`
+						</script>
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+						## Lambdas
+						
+						* The implementations of functional interfaces can be written as anonymous functions:
+						only the implementation of the single abstract method
+						* these are called lambda expressions/functions
+						* the lambda function is a value, always the implementation of a functional interface
+					</script>
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+						## A Java7 Comparator
+	Comparator<String> cmp = new Comparator<String>() {
+		
+			@Override public int compare(String s1, String s2) {
+				return s1.length() - s2.length();
+			}
+	
+	};
+					</script>
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+						## Lambda syntax
+						
+	Comparator<String> cmp = (String s1, String s2) -> {
+		return s1.length() - s2.length();
+	};
+					</script>
+					</section>
+
+					<section data-markdown>
+					<script type="text/template">
+						## Lambda syntax
+						
+	Comparator<String> cmp = (s1, s2) -> {
+		return s1.length() - s2.length();
+	};
+					</script>
+					</section>
+					
+										<section data-markdown>
+					<script type="text/template">
+						## Syntax
+						
+	Comparator<String> cmp = (s1, s2) -> s1.length() - s2.length();
+	
+					</script>
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+						## `java.util.function`
+						
+						Contains functional interfaces representing functions with different arities:
+						
+						* `Function<T, U>` : (T) -> U
+						* `Supplier<T>` : () -> T
+						* `Consumer<T>` : (T) -> void
+						* `Predicate<T>` : (T) -> boolean
+						* `BiFunction<T, U, V>` : (T, U) -> V
+					</script>
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+							## Method references
+							
+							* they serve the same purpose as lambdas
+							* even more simple than lambdas
+							* you can replace simple lambdas like
+							
+							 `obj -> obj.toString()`
+							 
+							 with `Object::toString`
+							* sometimes it is more readable
+					</script>
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+							## Method reference examples
+							
+	// static method reference
+	Function<PKBPerson, String> firstNameFn = PKBPerson::getFirstName; 
+	firstNameFn = person -> person.getFirstName();
+	
+	// instance method reference
+	Consumer<String> logger = System.out::println; 
+	logger = str -> System.out.println(str);
+	
+	// constructor reference
+	Supplier<Exception> exceptionFactory = IllegalStateException::new;
+	exceptionFactory = () -> new IllegalStateException();
+					</script>
+					</section>
+					
+				</section>
+				
+				<section>
+					<section id="stream-api" data-markdown>
+					<script type="text/template">
+						## Stream API
+							
+						* basically it is for in-memory processing of collections
+						* replaces `for ... if .... for ... if` pyramids
+						* it is a functional data processing API to be used with lambdas
+					</script>
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+						The `java.util.stream.Stream` class is more similar to an iterator than a collection:
+						* it usually doesn't store all of its elements
+						* a `Stream` instance is for one-time use, it processes all members of its source only once
+						* it doesn't necesssarily have to be finite. Infinite data streams can be simply constructed 
+					</script>
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+						### Stream instantiation
+						
+						* usually with the `Collection#stream()`
+						* stream of an array entry: with `Arrays#stream(Object[])`
+						* and some IO-related static factory methods:
+							* `BufferedReader.lines()`
+							* `JarFile.stream()`
+					</script>
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+						### Parallel streams
+						
+						* `Collection#parallelStream()`
+						* `Stream#parallel()`
+						* the underlying Executor is not configurable
+					</script>
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+						### Anatomy of a stream
+						
+						* the methods of the `Stream` class are called stream operators
+ 						* the methods  of the stream class are classified as
+							* intermediate
+							* terminal
+						  operators
+						* intermediate ops are lazy-evaluating
+						* terminals pull stream elements one by one, if/when they need it. Elements
+							not pulled by the terminal are not processed by any of the nonterminals
+					</script>
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+						### Example
+					
+    public Optional<PersonContact> getPrimaryContact(PKBPerson person) {
+		return person.getContacts().stream()
+			.filter(PersonContact::isPrimary)
+			.findFirst();
+	}
+					</script>
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+						### The map() intermediate operator
+						
+						* you have a stream of type `T` elements
+						* you need a stream of `U` elements and you have an appropriate `T -> U` function
+						* you can map the `Stream<T>` to a `Stream<U>` with the function using `ṁap()`
+					
+		List<String> userIdList = acceptedClinicians.stream()
+			.map(PKBPerson::getIdString)
+			.collect(Collectors.toList());
+					</script>
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+						### Frequently used terminal operators
+						
+						* `forEach( Consumer<T> )`
+						* `findFirst()` / `findAny()`
+						* `collect()`
+					</script>
+					</section>
+					
+				</section>
+				
+				<section>
+					<section id="optionals" data-markdown>
+					<script type="text/template">
+						## Optionals
+					
+						* it is a wrapper around a nullable reference
+						* the caller should explicitly perform null check using the Optional methods,
+							so this is a way to avoid NPE
+						* findFirst() / findAny() return an `Optional` instance
+					</script>
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+						## What is it for?
+						
+						* it is intended to be used for wrapping a nullable result of a computation, like `getWhateverById()` methods
+						* it is not for wrapping optional bean properties - naive getters should never return Optionals
+						* it is also not for expressing the optionality of a method parameter - use overloading instead 
+					</script>
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+						## Usage - unwrapping
+	Optional<PKBPerson> opt = ...
+	if (opt.isPresent()) {
+		PKBPerson person = opt.get();
+	} else {
+		// error handling
+	}
+					</script>
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+						## Usage - unwrapping
+	Optional<PKBPerson> opt = ...
+	PKBPerson person = opt.orElse(new PKBPerson()); // default value
+	
+	// forcing it to be a nullable reference
+	PKBPerson nullablePerson = opt.orElse(null); 
+					</script>
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+						## Usage - unwrapping
+	Optional<PKBPerson> opt = ...
+	// supplier returning default value
+	PKBPerson person = opt.orElseGet(someOtherDataSource::getPerson);
+
+&nbsp;
+
+	
+(reminder: `Supplier<T>` : () -> T)
+					</script>
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+						## Usage - unwrapping
+	Optional<PKBPerson> opt = ...
+	// supplier returning the exception to be thrown
+	PKBPerson person = opt.orElseThrow(
+		() -> new IllegalArgumentException("person not found")
+	); 
+					</script>
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+						## Usage - mapping
+	Optional<PKBPerson> opt = ...
+	// supplier returning the exception to be thrown
+	Optional<PersonContact> = opt.map(PKBPerson::getPrimaryContact); 
+					</script>
+					</section>
+					
+					<section data-markdown>
+					<script type="text/template">
+						## Usage - filtering
+	Optional<PKBPerson> opt = ...
+	Optional<PKBPerson> maybeAPatient = opt.filter(PKBPerson::isPatient); 
+					</script>
+					</section>
+					
+					
+				</section>
+				
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: true,
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
