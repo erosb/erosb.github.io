@@ -1,0 +1,14 @@
+000 - 072  walk   
+072 - 120  strafe left
+120 - 168  strafe right
+168 - 220  attack 1
+220 - 292  death 1
+292 - 350  attack 2
+350 - 440  attack 3
+440 - 576  death 2
+580 - 650  death 3
+660 - 760  idle 1
+761 - 849  idle 2
+850 - 880  gethit 1
+880 - 950  gethit 2
+951 - 1015 jump

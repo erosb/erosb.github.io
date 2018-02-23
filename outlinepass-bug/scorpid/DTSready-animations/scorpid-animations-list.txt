@@ -1,0 +1,9 @@
+000 - 072 walk   
+072 - 120 strafe left
+120 - 168 strafe right
+168 - 220 attack 1
+220 - 292 death 1
+292 - 350 attack 2
+350 - 440 attack 3
+440 - 576 death 2
+580 - 700 death 3
