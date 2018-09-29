@@ -46729,7 +46729,6 @@ class RawImageData {
 		 * The width of the image.
 		 *
 		 * @type {Number}
-		 * @default 0
 		 */
 
 		this.width = width;
@@ -46738,7 +46737,6 @@ class RawImageData {
 		 * The height of the image.
 		 *
 		 * @type {Number}
-		 * @default 0
 		 */
 
 		this.height = height;
@@ -46747,7 +46745,6 @@ class RawImageData {
 		 * The image data.
 		 *
 		 * @type {Uint8ClampedArray}
-		 * @default null
 		 */
 
 		this.data = data;
@@ -46756,7 +46753,6 @@ class RawImageData {
 		 * The amount of color channels used per pixel. Range [1, 4].
 		 *
 		 * @type {Number}
-		 * @default 4
 		 */
 
 		this.channels = channels;
@@ -51624,8 +51620,8 @@ class CopyMaterial extends __WEBPACK_IMPORTED_MODULE_0_three__["ShaderMaterial"]
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_three__ = __webpack_require__(0);
 
 
-const fragment = "#include <packing>\r\n\r\nuniform sampler2D tDepth;\r\nuniform float cameraNear;\r\nuniform float cameraFar;\r\n\r\nvarying float vViewZ;\r\nvarying vec4 vProjTexCoord;\r\n\r\nvoid main() {\r\n\r\n\t// Transform into Cartesian coordinate (not mirrored).\r\n\tvec2 projTexCoord = (vProjTexCoord.xy / vProjTexCoord.w) * 0.5 + 0.5;\r\n\tprojTexCoord = clamp(projTexCoord, 0.002, 0.998);\r\n\r\n\tfloat fragCoordZ = unpackRGBAToDepth(texture2D(tDepth, projTexCoord));\r\n\r\n\t#ifdef PERSPECTIVE_CAMERA\r\n\r\n\t\tfloat viewZ = perspectiveDepthToViewZ(fragCoordZ, cameraNear, cameraFar);\r\n\r\n\t#else\r\n\r\n\t\tfloat viewZ = orthographicDepthToViewZ(fragCoordZ, cameraNear, cameraFar);\r\n\r\n\t#endif\r\n\r\n\tfloat depthTest = (vViewZ <= viewZ) ? 1.0 : 0.0;\r\n\r\n\tgl_FragColor.rgb = vec3(0.0, depthTest, 1.0);\r\n\r\n}\r\n";
-const vertex = "varying float vViewZ;\r\nvarying vec4 vProjTexCoord;\r\n\r\nvoid main() {\r\n\r\n\tvec4 mvPosition = modelViewMatrix * vec4(position, 1.0);\r\n\tvProjTexCoord = projectionMatrix * mvPosition;\r\n\tvViewZ = mvPosition.z;\r\n\r\n\tgl_Position = vProjTexCoord;\r\n\r\n}\r\n";
+const fragment = "#include <packing>\r\n#include <clipping_planes_pars_fragment>\r\n\r\nuniform sampler2D tDepth;\r\nuniform float cameraNear;\r\nuniform float cameraFar;\r\n\r\nvarying float vViewZ;\r\nvarying vec4 vProjTexCoord;\r\n\r\nvoid main() {\r\n\r\n\t#include <clipping_planes_fragment>\r\n\r\n\t// Transform into Cartesian coordinate (not mirrored).\r\n\tvec2 projTexCoord = (vProjTexCoord.xy / vProjTexCoord.w) * 0.5 + 0.5;\r\n\tprojTexCoord = clamp(projTexCoord, 0.002, 0.998);\r\n\r\n\tfloat fragCoordZ = unpackRGBAToDepth(texture2D(tDepth, projTexCoord));\r\n\r\n\t#ifdef PERSPECTIVE_CAMERA\r\n\r\n\t\tfloat viewZ = perspectiveDepthToViewZ(fragCoordZ, cameraNear, cameraFar);\r\n\r\n\t#else\r\n\r\n\t\tfloat viewZ = orthographicDepthToViewZ(fragCoordZ, cameraNear, cameraFar);\r\n\r\n\t#endif\r\n\r\n\tfloat depthTest = (vViewZ <= viewZ) ? 1.0 : 0.0;\r\n\r\n\tgl_FragColor.rgb = vec3(0.0, depthTest, 1.0);\r\n\r\n}\r\n";
+const vertex = "#include <common>\r\n#include <morphtarget_pars_vertex>\r\n#include <skinning_pars_vertex>\r\n#include <clipping_planes_pars_vertex>\r\n\r\nvarying float vViewZ;\r\nvarying vec4 vProjTexCoord;\r\n\r\nvoid main() {\r\n\r\n\t#include <skinbase_vertex>\r\n\r\n\t#include <begin_vertex>\r\n\t#include <morphtarget_vertex>\r\n\t#include <skinning_vertex>\r\n\t#include <project_vertex>\r\n\r\n\tvViewZ = mvPosition.z;\r\n\tvProjTexCoord = gl_Position;\r\n\r\n\t#include <clipping_planes_vertex>\r\n\r\n}\r\n";
 
 /**
  * A depth comparison shader material.
@@ -51658,7 +51654,10 @@ class DepthComparisonMaterial extends __WEBPACK_IMPORTED_MODULE_0_three__["Shade
 			vertexShader: vertex,
 
 			depthWrite: false,
-			depthTest: false
+			depthTest: false,
+
+			morphTargets: true,
+			skinning: true
 
 		});
 
@@ -52341,7 +52340,7 @@ class LuminosityMaterial extends __WEBPACK_IMPORTED_MODULE_0_three__["ShaderMate
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_three__ = __webpack_require__(0);
 
 
-const fragment = "uniform sampler2D tDiffuse;\r\nuniform sampler2D tMask;\r\nuniform sampler2D tOutline;\r\n\r\nuniform vec3 visibleEdgeColor;\r\nuniform vec3 hiddenEdgeColor;\r\nuniform float pulse;\r\nuniform float edgeStrength;\r\n\r\n#ifdef USE_PATTERN\r\n\r\n\tuniform sampler2D tPattern;\r\n\tvarying vec2 vPatternCoord;\r\n\r\n#endif\r\n\r\nvarying vec2 vUv;\r\n\r\nvoid main() {\r\n\r\n\tvec4 color = texture2D(tDiffuse, vUv);\r\n\tvec2 outline = texture2D(tOutline, vUv).rg;\r\n\tvec2 mask = texture2D(tMask, vUv).rg;\r\n\r\n\t#ifndef X_RAY\r\n\r\n\t\toutline.y = 0.0;\r\n\r\n\t#endif\r\n\r\n\toutline *= (edgeStrength * mask.x * pulse);\r\n\tvec3 outlineColor = outline.x * visibleEdgeColor + outline.y * hiddenEdgeColor;\r\n\r\n\t#ifdef ALPHA_BLENDING\r\n\r\n\t\tcolor.rgb = mix(color.rgb, outlineColor, max(outline.x, outline.y));\r\n\r\n\t#else\r\n\r\n\t\tcolor.rgb += outlineColor;\r\n\r\n\t#endif\r\n\r\n\t#ifdef USE_PATTERN\r\n\r\n\t\tvec3 patternColor = texture2D(tPattern, vPatternCoord).rgb;\r\n\r\n\t\t#ifdef X_RAY\r\n\r\n\t\t\tfloat hiddenFactor = 0.5;\r\n\r\n\t\t#else\r\n\r\n\t\t\tfloat hiddenFactor = 0.0;\r\n\r\n\t\t#endif\r\n\r\n\t\tfloat visibilityFactor = (1.0 - mask.y > 0.0) ? 1.0 : hiddenFactor;\r\n\r\n\t\tcolor.rgb += visibilityFactor * (1.0 - mask.x) * (1.0 - patternColor);\r\n\r\n\t#endif\r\n\r\n\tgl_FragColor = color;\r\n\r\n}\r\n";
+const fragment = "uniform sampler2D tDiffuse;\r\nuniform sampler2D tMask;\r\nuniform sampler2D tEdges;\r\n\r\nuniform vec3 visibleEdgeColor;\r\nuniform vec3 hiddenEdgeColor;\r\nuniform float pulse;\r\nuniform float edgeStrength;\r\n\r\n#ifdef USE_PATTERN\r\n\r\n\tuniform sampler2D tPattern;\r\n\tvarying vec2 vPatternCoord;\r\n\r\n#endif\r\n\r\nvarying vec2 vUv;\r\n\r\nvoid main() {\r\n\r\n\tvec4 color = texture2D(tDiffuse, vUv);\r\n\tvec2 edge = texture2D(tEdges, vUv).rg;\r\n\tvec2 mask = texture2D(tMask, vUv).rg;\r\n\r\n\t#ifndef X_RAY\r\n\r\n\t\toutline.y = 0.0;\r\n\r\n\t#endif\r\n\r\n\tedge *= (edgeStrength * mask.x * pulse);\r\n\tvec3 outlineColor = edge.x * visibleEdgeColor + edge.y * hiddenEdgeColor;\r\n\r\n\t#ifdef ALPHA_BLENDING\r\n\r\n\t\tcolor.rgb = mix(color.rgb, outlineColor, max(edge.x, edge.y));\r\n\r\n\t#else\r\n\r\n\t\tcolor.rgb += outlineColor;\r\n\r\n\t#endif\r\n\r\n\t#ifdef USE_PATTERN\r\n\r\n\t\tvec3 patternColor = texture2D(tPattern, vPatternCoord).rgb;\r\n\r\n\t\t#ifdef X_RAY\r\n\r\n\t\t\tfloat hiddenFactor = 0.5;\r\n\r\n\t\t#else\r\n\r\n\t\t\tfloat hiddenFactor = 0.0;\r\n\r\n\t\t#endif\r\n\r\n\t\tfloat visibilityFactor = (1.0 - mask.y > 0.0) ? 1.0 : hiddenFactor;\r\n\r\n\t\tcolor.rgb += visibilityFactor * (1.0 - mask.x) * (1.0 - patternColor);\r\n\r\n\t#endif\r\n\r\n\tgl_FragColor = color;\r\n\r\n}\r\n";
 const vertex = "#ifdef USE_PATTERN\r\n\r\n\tuniform float aspect;\r\n\tuniform float patternScale;\r\n\tvarying vec2 vPatternCoord;\r\n\r\n#endif\r\n\r\nvarying vec2 vUv;\r\n\r\nvoid main() {\r\n\r\n\t#ifdef USE_PATTERN\r\n\r\n\t\tvec2 aspectCorrection = vec2(aspect, 1.0);\r\n\t\tvPatternCoord = uv * aspectCorrection * patternScale;\r\n\r\n\t#endif\r\n\r\n\tvUv = uv;\r\n\r\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\r\n\r\n}\r\n";
 
 /**
@@ -52384,7 +52383,7 @@ class OutlineBlendMaterial extends __WEBPACK_IMPORTED_MODULE_0_three__["ShaderMa
 
 				tDiffuse: new __WEBPACK_IMPORTED_MODULE_0_three__["Uniform"](null),
 				tMask: new __WEBPACK_IMPORTED_MODULE_0_three__["Uniform"](null),
-				tOutline: new __WEBPACK_IMPORTED_MODULE_0_three__["Uniform"](null),
+				tEdges: new __WEBPACK_IMPORTED_MODULE_0_three__["Uniform"](null),
 				tPattern: new __WEBPACK_IMPORTED_MODULE_0_three__["Uniform"](null),
 
 				edgeStrength: new __WEBPACK_IMPORTED_MODULE_0_three__["Uniform"](settings.edgeStrength),
@@ -52488,7 +52487,7 @@ class OutlineBlendMaterial extends __WEBPACK_IMPORTED_MODULE_0_three__["ShaderMa
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_three__ = __webpack_require__(0);
 
 
-const fragment = "uniform sampler2D tMask;\r\n\r\nvarying vec2 vUv0;\r\nvarying vec2 vUv1;\r\nvarying vec2 vUv2;\r\nvarying vec2 vUv3;\r\n\r\nvoid main() {\r\n\r\n\tvec2 c0 = texture2D(tMask, vUv0).rg;\r\n\tvec2 c1 = texture2D(tMask, vUv1).rg;\r\n\tvec2 c2 = texture2D(tMask, vUv2).rg;\r\n\tvec2 c3 = texture2D(tMask, vUv3).rg;\r\n\r\n\tfloat d0 = (c0.x - c1.x) * 0.5;\r\n\tfloat d1 = (c2.x - c3.x) * 0.5;\r\n\tfloat d = length(vec2(d0, d1));\r\n\r\n\tfloat a0 = min(c0.y, c1.y);\r\n\tfloat a1 = min(c2.y, c3.y);\r\n\tfloat visibilityFactor = min(a0, a1);\r\n\r\n\tvec3 edgeColor = (1.0 - visibilityFactor > 0.001) ? vec3(1.0, 0.0, 0.0) : vec3(0.0, 1.0, 0.0);\r\n\r\n\tgl_FragColor = vec4(edgeColor * d, d);\r\n\r\n}\r\n";
+const fragment = "uniform sampler2D tMask;\r\n\r\nvarying vec2 vUv0;\r\nvarying vec2 vUv1;\r\nvarying vec2 vUv2;\r\nvarying vec2 vUv3;\r\n\r\nvoid main() {\r\n\r\n\tvec2 c0 = texture2D(tMask, vUv0).rg;\r\n\tvec2 c1 = texture2D(tMask, vUv1).rg;\r\n\tvec2 c2 = texture2D(tMask, vUv2).rg;\r\n\tvec2 c3 = texture2D(tMask, vUv3).rg;\r\n\r\n\tfloat d0 = (c0.x - c1.x) * 0.5;\r\n\tfloat d1 = (c2.x - c3.x) * 0.5;\r\n\tfloat d = length(vec2(d0, d1));\r\n\r\n\tfloat a0 = min(c0.y, c1.y);\r\n\tfloat a1 = min(c2.y, c3.y);\r\n\tfloat visibilityFactor = min(a0, a1);\r\n\r\n\tgl_FragColor.rg = (1.0 - visibilityFactor > 0.001) ? vec2(d, 0.0) : vec2(0.0, d);\r\n\r\n}\r\n";
 const vertex = "uniform vec2 texelSize;\r\n\r\nvarying vec2 vUv0;\r\nvarying vec2 vUv1;\r\nvarying vec2 vUv2;\r\nvarying vec2 vUv3;\r\n\r\nvoid main() {\r\n\r\n\tvUv0 = vec2(uv.x + texelSize.x, uv.y);\r\n\tvUv1 = vec2(uv.x - texelSize.x, uv.y);\r\n\tvUv2 = vec2(uv.x, uv.y + texelSize.y);\r\n\tvUv3 = vec2(uv.x, uv.y - texelSize.y);\r\n\r\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\r\n\r\n}\r\n";
 
 /**
@@ -53285,7 +53284,6 @@ const b1 = new __WEBPACK_IMPORTED_MODULE_0_three__["Box2"]();
  *
  * @type {Number}
  * @private
- * @final
  */
 
 const ORTHOGONAL_SIZE = 16;
@@ -53295,7 +53293,6 @@ const ORTHOGONAL_SIZE = 16;
  *
  * @type {Number}
  * @private
- * @final
  */
 
 const DIAGONAL_SIZE = 20;
@@ -53306,7 +53303,6 @@ const DIAGONAL_SIZE = 20;
  *
  * @type {Number}
  * @private
- * @final
  */
 
 const DIAGONAL_SAMPLES = 30;
@@ -53316,7 +53312,6 @@ const DIAGONAL_SAMPLES = 30;
  *
  * @type {Number}
  * @private
- * @final
  */
 
 const SMOOTH_MAX_DISTANCE = 32;
@@ -56241,6 +56236,7 @@ class OutlinePass extends __WEBPACK_IMPORTED_MODULE_3__Pass_js__["a" /* Pass */]
 	 * @param {PerspectiveCamera} camera - The main camera.
 	 * @param {Object} [options] - Additional parameters. See {@link BlurPass}, {@link OutlineBlendMaterial} and {@link OutlineEdgesMaterial} for details.
 	 * @param {Object} [options.pulseSpeed=0.0] - The pulse speed. A value of zero disables the pulse effect.
+	 * @param {Object} [options.blur=true] - Whether the outline should be blurry.
 	 */
 
 	constructor(scene, camera, options = {}) {
@@ -56286,10 +56282,11 @@ class OutlinePass extends __WEBPACK_IMPORTED_MODULE_3__Pass_js__["a" /* Pass */]
 
 		this.renderTargetDepth = new __WEBPACK_IMPORTED_MODULE_0_three__["WebGLRenderTarget"](1, 1, {
 			minFilter: __WEBPACK_IMPORTED_MODULE_0_three__["LinearFilter"],
-			magFilter: __WEBPACK_IMPORTED_MODULE_0_three__["LinearFilter"]
+			magFilter: __WEBPACK_IMPORTED_MODULE_0_three__["LinearFilter"],
+			format: __WEBPACK_IMPORTED_MODULE_0_three__["RGBFormat"]
 		});
 
-		this.renderTargetDepth.texture.name = "GodRays.Depth";
+		this.renderTargetDepth.texture.name = "Outline.Depth";
 		this.renderTargetDepth.texture.generateMipmaps = false;
 
 		/**
@@ -56301,7 +56298,7 @@ class OutlinePass extends __WEBPACK_IMPORTED_MODULE_3__Pass_js__["a" /* Pass */]
 
 		this.renderTargetMask = this.renderTargetDepth.clone();
 
-		this.renderTargetMask.texture.name = "GodRays.Mask";
+		this.renderTargetMask.texture.name = "Outline.Mask";
 
 		/**
 		 * A render target for the edge detection.
@@ -56314,10 +56311,11 @@ class OutlinePass extends __WEBPACK_IMPORTED_MODULE_3__Pass_js__["a" /* Pass */]
 			minFilter: __WEBPACK_IMPORTED_MODULE_0_three__["LinearFilter"],
 			magFilter: __WEBPACK_IMPORTED_MODULE_0_three__["LinearFilter"],
 			stencilBuffer: false,
-			depthBuffer: false
+			depthBuffer: false,
+			format: __WEBPACK_IMPORTED_MODULE_0_three__["RGBFormat"]
 		});
 
-		this.renderTargetEdges.texture.name = "GodRays.Edges";
+		this.renderTargetEdges.texture.name = "Outline.Edges";
 		this.renderTargetEdges.texture.generateMipmaps = false;
 
 		/**
@@ -56327,9 +56325,9 @@ class OutlinePass extends __WEBPACK_IMPORTED_MODULE_3__Pass_js__["a" /* Pass */]
 		 * @private
 		 */
 
-		this.renderTargetOutline = this.renderTargetEdges.clone();
+		this.renderTargetBlurredEdges = this.renderTargetEdges.clone();
 
-		this.renderTargetOutline.texture.name = "GodRays.Outline";
+		this.renderTargetBlurredEdges.texture.name = "Outline.BlurredEdges";
 
 		/**
 		 * A depth pass.
@@ -56339,7 +56337,11 @@ class OutlinePass extends __WEBPACK_IMPORTED_MODULE_3__Pass_js__["a" /* Pass */]
 		 */
 
 		this.renderPassDepth = new __WEBPACK_IMPORTED_MODULE_4__RenderPass_js__["a" /* RenderPass */](this.mainScene, this.mainCamera, {
-			overrideMaterial: new __WEBPACK_IMPORTED_MODULE_0_three__["MeshDepthMaterial"]({ depthPacking: __WEBPACK_IMPORTED_MODULE_0_three__["RGBADepthPacking"] }),
+			overrideMaterial: new __WEBPACK_IMPORTED_MODULE_0_three__["MeshDepthMaterial"]({
+				depthPacking: __WEBPACK_IMPORTED_MODULE_0_three__["RGBADepthPacking"],
+				morphTargets: true,
+				skinning: true
+			}),
 			clearColor: new __WEBPACK_IMPORTED_MODULE_0_three__["Color"](0xffffff),
 			clearAlpha: 1.0
 		});
@@ -56401,7 +56403,8 @@ class OutlinePass extends __WEBPACK_IMPORTED_MODULE_3__Pass_js__["a" /* Pass */]
 
 		this.outlineBlendMaterial = new __WEBPACK_IMPORTED_MODULE_1__materials__["n" /* OutlineBlendMaterial */](options);
 		this.outlineBlendMaterial.uniforms.tMask.value = this.renderTargetMask.texture;
-		this.outlineBlendMaterial.uniforms.tOutline.value = this.renderTargetOutline.texture;
+
+		this.blur = (options.blur !== undefined) ? options.blur : true;
 
 		/**
 		 * A list of objects to outline.
@@ -56508,8 +56511,8 @@ class OutlinePass extends __WEBPACK_IMPORTED_MODULE_3__Pass_js__["a" /* Pass */]
 
 		this.blurPass.enabled = value;
 
-		this.outlineBlendMaterial.uniforms.tOutline.value = value ?
-			this.renderTargetOutline.texture :
+		this.outlineBlendMaterial.uniforms.tEdges.value = value ?
+			this.renderTargetBlurredEdges.texture :
 			this.renderTargetEdges.texture;
 
 	}
@@ -56733,7 +56736,7 @@ class OutlinePass extends __WEBPACK_IMPORTED_MODULE_3__Pass_js__["a" /* Pass */]
 			if(this.blurPass.enabled) {
 
 				// Blur the edges.
-				this.blurPass.render(renderer, this.renderTargetEdges, this.renderTargetOutline);
+				this.blurPass.render(renderer, this.renderTargetEdges, this.renderTargetBlurredEdges);
 
 			}
 
@@ -56764,14 +56767,6 @@ class OutlinePass extends __WEBPACK_IMPORTED_MODULE_3__Pass_js__["a" /* Pass */]
 		this.renderPassMask.initialize(renderer, alpha);
 		this.blurPass.initialize(renderer, alpha);
 
-		if(!alpha) {
-
-			this.renderTargetMask.texture.format = __WEBPACK_IMPORTED_MODULE_0_three__["RGBFormat"];
-			this.renderTargetEdges.texture.format = __WEBPACK_IMPORTED_MODULE_0_three__["RGBFormat"];
-			this.renderTargetOutline.texture.format = __WEBPACK_IMPORTED_MODULE_0_three__["RGBFormat"];
-
-		}
-
 	}
 
 	/**
@@ -56794,7 +56789,7 @@ class OutlinePass extends __WEBPACK_IMPORTED_MODULE_3__Pass_js__["a" /* Pass */]
 		height = this.blurPass.height;
 
 		this.renderTargetEdges.setSize(width, height);
-		this.renderTargetOutline.setSize(width, height);
+		this.renderTargetBlurredEdges.setSize(width, height);
 
 		this.outlineBlendMaterial.uniforms.aspect.value = width / height;
 		this.outlineEdgesMaterial.setTexelSize(1.0 / width, 1.0 / height);
