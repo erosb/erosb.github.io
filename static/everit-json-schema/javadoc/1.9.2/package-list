@@ -1,0 +1,5 @@
+org.everit.json.schema
+org.everit.json.schema.internal
+org.everit.json.schema.loader
+org.everit.json.schema.loader.internal
+org.everit.json.schema.regexp
