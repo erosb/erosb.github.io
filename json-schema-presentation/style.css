@@ -1,0 +1,179 @@
+@font-face {
+    font-family: "Rockwell";
+    src: url("./ROCK.TTF");
+}
+
+body {
+    margin: 0;
+    font-family: "Rockwell";
+    font-size: 1.5em;
+    background-color: #013c4b;
+}
+
+body > h1 {
+    display: none;
+}
+
+.slide {
+    padding: 1.7em;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    transform: translateX(100%); 
+    top: 0;
+    background-color: #013c4b;
+    color: #dccea8;
+    
+    display: grid;
+    grid-template-columns: 15% auto auto 15%;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+            "header  header  header  header"
+            " . content content . ";
+    transition: transform 0.7s;
+    will-change: transform;
+}
+
+.slide a {
+    color: #dccea8
+}
+
+.slide h2 {
+    grid-area: header;
+    font-size: 2em;
+    margin: 0;
+    margin-block-start: 0;
+    margin-block-end: 0;
+}
+
+.slide.current {
+    transform: translateX(0);
+}
+
+.slide.prev {
+    transform: translateX(-100%);
+}
+
+.slide .content {
+    grid-area: content;
+    font-size: 1.8em;
+    justify-self: center;
+    vertical-align: middle;
+}
+
+.content .code {
+    display:block;
+}
+
+.content ul li {
+    line-height: 150%;
+}
+
+.slide.example {
+    grid-template-columns: auto auto auto auto;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+            "header  header  header  header"
+            " . instance schema . ";
+}
+
+.example div.schema, .example div.instance {
+    font-size: 1.4em;
+    padding: 0.5em;
+    overflow: auto;
+}
+
+div.content.schema-long {
+    overflow: auto;
+    font-size: 1.4em;
+}
+
+.example div.instance-long {
+    direction: rtl;
+}
+
+.example div.schema pre, .example div.instance pre {
+    direction: ltr;
+}
+
+.example div.schema {
+    grid-area: schema
+}
+
+.example div.instance {
+    grid-area: instance
+}
+
+.example div.schema::before {
+    content: "Schema"
+}
+
+.example div.instance::before {
+    content: "Instance";
+}
+
+.example div.instance.notitle::before {
+    content: "";
+}
+
+.example div.instance.invalid pre{
+    border:5px solid #ff3d00;
+}
+
+.example div.instance.invalid::before {
+    content: "Instance (invalid)"
+}
+
+.example div.instance.valid pre{
+    border:5px solid #3bd83b;
+}
+
+.example div.instance.valid::before {
+    content: "Instance (valid)"
+}
+
+li.keyword: {
+    white-space: pre;
+    font-family: monospace;
+}
+
+.overview-layer {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-color: rgba(0.4, 0.4, 0.4, 0.4);
+    overflow: scroll;
+}
+
+.overview-layer h1 {
+    width: 30%;
+    background-color: white;
+    margin: 0;
+    padding-left: 40px;
+}
+
+.overview-layer ol, .overview-layer ul {
+    width: 30%;
+    height: 100%;
+    background-color: white;
+    margin: 0;
+    padding-left: 40px;
+}
+
+.overview-layer li a {
+    color: black;
+    padding: 0.75em;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    display: block;
+    text-decoration: none;
+}
+
+.overview-layer li.current a{
+    background-color: #013c4b;
+    color: white;
+}
+
+

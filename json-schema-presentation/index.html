@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="hu">
+    <head>
+        <title>Bevezetés a JSON Schema-ba</title>
+        <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+        <link rel="stylesheet" type="text/css" href="./style.css" />
+        <script src="./presentation.js"></script>
+        
+        <link href="prism.css" rel="stylesheet" />
+        <script src="prism.js"></script>
+    </head>
+    <body>
+        
+        <h1>Bevezetés a JSON Schema-ba</h1>
+        
+        <div class="slides">
+            
+            <div class="slide">
+                <h2>Bevezetés a JSON Schema-ba</h2>
+                
+                <div class="content">
+                    <p>Schönherz Meetup</p>
+                    <p>2018 November 15</p>
+                </div>
+            </div>
+            
+            <div class="slide">
+                <h2>whoami</h2>
+                
+                <ul class="content">
+                    <li>Erős Bence</li>
+                    <li><a href="http://github.com/erosb">github.com/erosb</a></li>
+                    <li><a href="http://github.com/everit-org/json-schema">github.com/everit-org/json-schema</a></li>
+                </ul>
+                
+            </div>
+            
+            <div class="slide">
+                <h2>Mi az a JSON Schema</h2>
+                
+                <div class="content">
+                    <p>A séma egy olyan JSON dokumentum, mely más JSON dokumentumok (instance-ok) struktúráját írja le.</p>
+                    <i>Analógiák: egy JSON séma és egy JSON dokumentum olyan viszonyban állnak egymással, mint</i>
+                    <ul>
+                        <li>egy osztály egy objektummal</li>
+                        <li>egy XSD dokumentum és egy XML dokumentum</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="slide example">
+                <h2>Példa</h2>
+                
+                    <div class="schema">
+                    {
+                        "type": "object",
+                        "properties": {
+                            "product": {
+                                "type": "string"
+                            },
+                            "quantity": {
+                                "type": "integer",
+                                "minimum": 1
+                            }
+                        }
+                    }
+                    </div>
+                    
+                    <div class="instance">
+                    {
+                        "product": "foo",
+                        "quantity": 12
+                    }
+                    </div>
+                
+            </div>
+            
+            <div class="slide">
+                <h2>Mire jó?</h2>
+                
+                <div class="content">
+                    <ul>
+                        <li>elsősorban validációra</li>
+                        <li>dokumentáció generálás</li>
+                        <li>kódgenerálás (adatmodell vagy UI)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="slide">
+                <h2>Hogyan készül?</h2>
+                
+                <div class="content">
+                    <ul>
+                        <li>közösségi fejlesztés: maga a szabvány is GitHubon indult 2011-ben, nem ISO / ANSI / ECMA szabvány</li>
+                        <li><a href="github.com/json-schema-org/json-schema-spec">github.com/json-schema-org/json-schema-spec</a></li>
+                        <li>ugyanúgy zajlik a fejlesztés, mint bármilyen más open source projektnél: lehet nyitni issue-kat, a szabvány szövegéhez pull requesteket</li>
+                        <li>a json-schema.org honlap fejlesztése ugyanígy történik</li>
+                        <li>kb. 7 committer</li>
+                        <li>release ritkán van</li>
+                        <li>minden publikus verzió draft</li>
+                        <li>minden verzióhoz tartozik egy test suite</li>
+                        <li>meta-sémák</li>
+                        <li>a verziókat IETF draft formájában is publikálják</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="slide">
+            <h2>Draft verziók</h2>
+            <div class="content">
+            <ul>
+                <li>draft 01: December 5, 2009</li>
+                <li>draft 02: March 23, 2010</li>
+                <li>draft 03: November 22, 2010</li>
+                <li>draft 04: Január 31, 2013</li>
+                <li style="color: gray">draft 05: Október 13 , 2016</li>
+                <li>draft 06: April 15, 2017</li>
+                <li>draft 07: November 19, 2017</li>
+            </ul>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>$schema</h2>
+            
+            <div class="content schema-long">
+                    {
+                        "$schema": "http://json-schema.org/draft-07/schema",
+                        "type": "object",
+                        "properties": {
+                            "product": {
+                                "type": "string"
+                            },
+                            "quantity": {
+                                "type": "integer",
+                                "minimum": 1
+                            }
+                        }
+                    }
+            </div>
+        </div>
+        
+        <div class="slide example">
+            <h2>Mit lehet leírni?</h2>
+            
+                    <div class="instance">
+                    [
+                        4,
+                        4.2,
+                        "hello",
+                        true,
+                        null,
+                        [0, 1, "2"],
+                        {"key": "value"}
+                    ]
+                    </div>
+        </div>
+        
+        <div class="slide example">
+            <h2>Számok</h2>
+            
+            <div class="instance">
+                4
+            </div>
+            
+            <div class="schema">
+                {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 99,
+                    "exclusiveMinimum": 0, // draft 6
+                    "exclusiveMaximum": 100, // draft 6
+                    "multipleOf": 2
+                }
+            </div>
+        </div>
+        
+        <div class="slide example">
+            <h2>Hiányzó "type"</h2>
+            
+            <div class="instance valid">
+                "hello"
+            </div>
+            
+            <div class="schema">
+                {
+                    "minimum": 1,
+                    "maximum": 99,
+                    "exclusiveMinimum": 0,
+                    "exclusiveMaximum": 100,
+                    "multipleOf": 2
+                }
+            </div>
+        </div>
+        
+        <div class="slide example">
+            <h2>"integer" vs. "number"</h2>
+            <div class="instance invalid">
+                3.14
+            </div>
+            
+            <div class="schema">
+                {
+                    "type": "integer"
+                }
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>Számok: implementáció-specifikus kérdések</h2>
+            
+            <div class="content">
+                <ul>
+                    <li>mi a legnagyobb/legkisebb értelmezett szám?</li>
+                    <li>a 3.0 egész szám?</li>
+                    <li>multipleOf: a 4.0 osztható 2-vel?</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide example">
+            <h2>Sztringek</h2>
+            <div class="instance">
+                "hello"
+            </div>
+            
+            <div class="schema">
+                {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 8,
+                    "pattern": "^he.*",
+                }
+            </div>
+        </div>
+        
+        <div class="slide example">
+            <h2>Sztringek - "format" kulcsszó</h2>
+            
+            <div class="instance">
+                "hello@example.org"
+            </div>
+            
+            <div class="schema">
+                {
+                    "type": "string",
+                    "format": "email"
+                }
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>"format"</h2>
+            
+            <div class="content">
+                <ul>
+                    <li>date, time, date-time (RFC 3339)</li>
+                    <li>email (RFC 5322), idn-email (RFC 6531)</li>
+                    <li>hostname (RFC 1034, RFC 5891)</li>
+                    <li>ipv4 (RFC 2673), ipv6 (RFC 4291)</li>
+                    <li>uri, uri-reference (RFC 3986)</li>
+                    <li>uri-template (RFC 6570)</li>
+                    <li>json-pointer (RFC 6901)</li>
+                    <li>regex (ECMA 262)</li>
+                    <li>+saját</li>
+                </ul>
+            </div>
+        </div>
+        
+        
+        <div class="slide">
+            <h2>Sztringek: implementáció-specifikus kérdések</h2>
+            
+            <div class="content">
+                <ul>
+                    <li>regexp: szabvány szerint az ECMA-262 reguláris kifejezéseket kell étrteniük az implementációknak</li>
+                    <li>a testsuite-ban elég kevés teszteset van, és a legtöbb implementáció a platform beépített regexp könyvtárát használja</li>
+                    <li>"format" támogatás</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide example">
+            <h2>Kevert séma</h2>
+            
+            <div class="instance">
+                3
+                "3"
+                {"key": "value"}
+            </div>
+            
+            <div class="schema">
+                {
+                    "minimum": 0,
+                    "pattern": "[0-9]+"
+                }
+            </div>
+        </div>
+        
+        
+        <div class="slide example">
+            <h2>Kevert séma - "type" mint tömb</h2>
+            
+            <div class="instance invalid">
+                22
+                "333"
+                {"key": "value"}
+            </div>
+            
+            <div class="schema">
+                {
+                    "type": ["string", "integer"]
+                    "minimum": 0,
+                    "pattern": "^[0-9]+$"
+                }
+            </div>
+        </div>
+        
+        
+        <div class="slide example">
+            <h2>Tömbök - lista validáció</h2>
+            
+            <div class="instance">
+                <pre>
+                    ["a", "b", "ccc"]
+                </pre>
+            </div>
+            
+            <div class="schema">
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "minItems": 1,
+                    "maxItems": 10,
+                    "uniqueItems": true,
+                    "contains": {   // draft 7
+                        "minLength": 3
+                    }
+                }
+            </div>
+        </div>
+        
+        <div class="slide example">
+            <h2>Tömbök - tuple validáció</h2>
+            
+            <div class="instance">
+                [
+                    "hello",
+                    2
+                ]
+            </div>
+            
+            <div class="schema">
+                {
+                    "type": "array",
+                    "items": [
+                        { "type": "string" }
+                        { "type": "integer" }
+                    ]
+                }
+            </div>
+        </div>
+        
+        <div class="slide example">
+            <h2>Tuple validáció - "additionalItems"</h2>
+            
+            <div class="instance invalid">
+                [
+                    "hello",
+                    2,
+                    3,
+                    4,
+                    5
+                ]
+            </div>
+            
+            <div class="schema">
+                {
+                    "type": "array",
+                    "items": [
+                        { "type": "string" }
+                        { "type": "integer" }
+                    ],
+                    "additionalItems": false
+                }
+            </div>
+        </div>
+        
+        <div class="slide example">
+            <h2>Objektumok / objektumok</h2>
+            
+            <div class="instance">
+                {
+                    "product": "foo",
+                    "quantity": 10,
+                    "active": true
+                }
+            </div>
+            
+            <div class="schema">
+                {
+                    "type": "object",
+                    "properties": {
+                        "product": { "type": "string" }
+                        "quantity": { "type": "number" }
+                        "active": { "type": "boolean" }
+                    },
+                    "required": ["product", "quantity"],
+                    "additionalProperties": false
+                }
+            </div>
+        </div>
+        
+        <div class="slide example">
+            <h2>Objektumok / map-ek</h2>
+            
+            <div class="instance">
+                {
+                    "product1": "foo",
+                    "product2": "bar",
+                    "quantity1": 12,
+                    "quantity2": 15,
+                }
+            </div>
+            
+            <div class="schema">
+                {
+                    "type": "object",
+                    "minProperties": 1,
+                    "maxProperties": 10,
+                    "patternProperties": {
+                        "^product[1-9]+$": { "type" : "string" }
+                        "^quantity[1-9]+$": { "type" : "integer" }
+                    },
+                    "propertyNames": { // vagy: "additionalProperties": false
+                        "pattern": "^(product|quantity)[0-9]+$"
+                    }
+                }
+            </div>
+        </div>
+        
+        <div class="slide example">
+            <h2>Objektumok / dependencies</h2>
+            
+            <div class="instance">
+                {
+                    "product": "foo",
+                    "quantity": 15,
+                    "billingEntity": "NevemSenki",
+                    "billingAddress":
+                    "Szellemváros, Sehol utca -5"
+                }
+            </div>
+            
+            <div class="schema">
+                {
+                    "type": "object",
+                    "properties": {
+                        "product": { "type": "string" }
+                        "quantity": { "type": "integer" }
+                    },
+                    "required": ["product", "quantity"],
+                    "dependencies": {
+                        "billingEntity": [ "billingAddress" ]
+                        "billingAddress": [ "billingEntity" ]
+                    }
+                }
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>Nullable kulcsok</h2>
+            
+            <div class="content">
+                <ul>
+                    <li>alapértelmezetten a "properties"-ben megadott kulcsok opcionálisak</li>
+                    <li>ez azt jelenti, hogy ki lehet hagyni őket; azt nem, hogy lehet null az értékük</li>
+                    <li>megoldás: <code>"type": "null"</code> segédtípus</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide example">
+            <h2>Nullable kulcs példa</h2>
+            
+            <div class="instance">
+                [
+                    { "mykey" : "aaa"},
+                    { "mykey" : null },
+                    { "mykey" : "cccc" }
+                ]
+            </div>
+            
+            <div class="schema">
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "mykey": {
+                                "type": ["string", "null"]
+                                "minLength": 3
+                            }
+                        }
+                    }
+                }
+            </div>
+        </div>
+        
+        <div class="slide example">
+            <h2>Bonyolultabb objektum</h2>
+            
+            <div class="instance instance-long">
+                { "invoice": {
+                    "totalPrice": {
+                        "gross": 220,
+                        "net": 220,
+                        "currency": "HUF",
+                    },
+                    "invoiceLines": [ {
+                        "lineItem": "product1",
+                        "quantity": 10,
+                        "lineTotalPrice": {
+                            "gross": 220,
+                            "net": 220,
+                            "currency": "HUF",
+                        }
+                    } ],
+                    "recipient": { ... }
+                    }
+                }
+            </div>
+            
+            <div class="schema">
+                {
+                    "type": "object",
+                    "properties": {
+                        "invoice": {
+                            "type": "object",
+                            "properties": {
+                                "totalPrice": {
+                                    "type": object",
+                                    "properties": {
+                                        "net": {"type": "number"},
+                                        "gross": {"type": "number"},
+                                        "currency": {"enum": [
+                                            "HUF", "GBP", "USD", "EUR"
+                                        ]}
+                                    }
+                                },
+                                "invoiceLines": {
+                                    "type": "array",
+                                    "minLength": 1,
+                                    "items": {
+                                        "type": object",
+                                        "properties": {
+                                            "lineItem": { "type": "string" },
+                                            "quantity": { "type": "integer" },
+                                            "lineTotalPrice": {
+                                                "net": {"type": "number"},
+                                                "gross": {"type": "number"},
+                                                "currency": {"enum": [
+                                                    "HUF", "GBP", "USD", "EUR"
+                                                ]}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>$ref - duplikációk kiszűrése</h2>
+            <div class="content schema-long">
+                <pre>
+                <code class="language-json">
+                {
+                    "type": "object",
+                    "properties": {
+                        "invoice": {
+                            "type": "object",
+                            "properties": {
+                                "totalPrice": {
+                                    "$ref": "#/definitions/Price"
+                                },
+                                "invoiceLines": {
+                                    "type": "array",
+                                    "minLength": 1,
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "lineItem": { "type": "string" },
+                                            "quantity": { "type": "integer" },
+                                            "lineTotalPrice": {
+                                                "$ref": "#/definitions/Price"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "definitions": {
+                        "Price": {
+                            "type": object",
+                            "properties": {
+                                "net": {"type": "number"},
+                                "gross": {"type": "number"},
+                                "currency": {"enum": [
+                                    "HUF", "GBP", "USD", "EUR"
+                                ]}
+                            }
+                        }
+                    }
+                }
+                </code>
+                </pre>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>$ref - további nevek bevezetése</h2>
+            <div class="content schema-long">
+                <pre>
+                <code class="language-json">
+                {
+                    "type": "object",
+                    "properties": {
+                        "invoice": {
+                            "$ref": "#/definitions/Invoice"
+                        }
+                    },
+                    "definitions": {
+                        "Invoice": {
+                            "type": "object",
+                            "properties": {
+                                "totalPrice": {
+                                    "$ref": "#/definitions/Price"
+                                },
+                                "invoiceLines": {
+                                    "$ref": "#/definitions/InvoiceLines"
+                                }
+                            }
+                        },
+                        "InvoiceLine": {
+                            "type": "object",
+                            "properties": {
+                                "lineItem": { "type": "string" },
+                                "quantity": { "type": "integer" },
+                                "lineTotalPrice": {
+                                    "$ref": "#/definitions/Price"
+                                }
+                            }
+                        },
+                        "InvoiceLines": {
+                            "type": "array",
+                            "minLength": 1,
+                            "items": {
+                                "$ref": "#/definitions/InvoiceLine"
+                            }
+                        },
+                        "Price": {
+                            "type": object",
+                            "properties": {
+                                "net": {"type": "number"},
+                                "gross": {"type": "number"},
+                                "currency": {"enum": [
+                                    "HUF", "GBP", "USD", "EUR"
+                                ]}
+                            }
+                        }
+                    }
+                }
+                </code>
+                </pre>
+            </div>
+        </div>
+        
+        <div class="slide example">
+            <h2>$ref - hivatkozás külső dokumentumra</h2>
+            
+            <div class="instance notitle">
+                Billing.json
+                Customer.json
+                Invoice.json
+                Order.json
+                Product.json
+                root.json
+            </div>
+            
+            <div class="schema">
+                {
+                    "$ref": "./Customer.json#/definitons/Customer"
+                    ...
+                }
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>Mire jó a $ref?</h2>
+            
+            <div class="content">
+                <ul>
+                    <li>alsémák nevesítésére</li>
+                    <li>duplikációk kiszűrésére</li>
+                    <li>rekurzív sémák írására</li>
+                    <li>külső sémadokumentumokra való hivatkozásra</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide example">
+            <h2>Felsorolt típusok</h2>
+            
+            <div class="instance">
+                []
+            </div>
+            
+            <div class="schema">
+                {
+                    "enum": [
+                        "", null, false, {}, []
+                    ]
+                }
+            </div>
+        </div>
+        
+        <div class="slide example">
+            <h2>"const" séma (draft 7) </h2>
+            
+            <div class="instance">
+                {"key": []}
+            </div>
+            
+            <div class="schema">
+                {
+                    "const": {"key": []}
+                }
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>Mi egy séma?</h2>
+            
+            <div class="content">
+                <ul>
+                    <li>A séma egy típust határoz meg</li>
+                    <li>A típusok pedig halmazok</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>Példák halmazokra a matematikában</h2>
+            
+            <div class="content">
+                <p>
+                    Matematikában vagy az elemei felsorolásával adunk meg egy halmazt: {1, 2, 3, ...}
+                </p>
+                <p>
+                    Vagy megadunk egy alaphalmazt, amelyet logikai formulával szűkítve határozunk meg egy részhalmazt:
+                </p>
+                <p>
+                    <img src="./even-numbers.png" />
+                    <img src="./matrices.png" />
+                </p>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>Típusok egy OO nyelven</h2>
+            
+            <div class="content">
+                <pre>
+                    <code class="language-java">
+                    public interface Collection&lt;E&gt; extends Iterable&lt;E&gt; {
+                        boolean add(E e)
+                        void clear();
+                        int size();
+                    }
+                    </code>
+                </pre>
+                <ul>
+                    <li>megadtunk egy alaptípust</li>
+                    <li>egyféle predikátum: <strong>milyen művelet értelmezhető</strong> az altípuson</li>
+                    <li>a predikátumokat kvázi konjunkcióval ("és") kötjük össze</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>A json schema mint típusrendszer</h2>
+            
+            <div class="content">
+                <ul>
+                    <li>sokkal inkább a matematikai halmazfogalomhoz áll közel, mint az OO típusfogalomhoz</li>
+                    <li>sokféle predikátum</li>
+                    <li>ezekből az atomi formulákból (predikátum-előfordulásokból) lehet összetett formulákat konstruálni</li>
+                    <li>"allOf" (és), "anyOf" (vagy), "oneOf" (pontosan egy), "not"</li>
+                </ul>
+                Ez nagyon messze áll az OO típusszemlélettől <br/>&raquo; adatmodellt generálni problémás.
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>Öröklődés: OO modell</h2>
+            
+            <div class="content">
+                <img src="./question.png"/>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>Öröklődés: instance</h2>
+            
+            <div class="content schema-long">
+                [
+                    {
+                        "text": "Do you have any pets?",
+                        "options": [ "Yes", "No" ],
+                        "answerIdx": 0
+                    },
+                    {
+                        "What pets do you have?",
+                        "options": [ "Cat", "Dog", "Dragon" ],
+                        "answers": [ 0, 1 ]
+                    }
+                    {
+                        "text": "What do your pets eat?",
+                        "answer": "My dog ate my cat so none of them are hungry"
+                    }
+                ]
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>Öröklődés: "allOf" és "anyOf" kulcsszavakkal</h2>
+            
+            <div class="content schema-long">
+                        {
+                            "definitions": {
+                                "Question": {
+                                    "oneOf": [
+                                        { "$ref": "#/definitions/FreeTextQuestion" },
+                                        { "$ref": "#/definitions/SingleChoiceQuestion" },
+                                        { "$ref": "#/definitions/MultiChoiceQuestion" }
+                                    ]
+                                },
+                                "QuestionBase": {
+                                    "type": "object",
+                                    "properties": {
+                                        "text": { "type": "string" }
+                                    }
+                                },
+                                "FreeTextQuestion": {
+                                    "allOf": [
+                                        { "$ref": "#/definitions/QuestionBase" },
+                                        {
+                                            "properties": {
+                                                "answer": { "type": "string" }
+                                            },
+                                            "required": [ "answer" ]
+                                        }
+                                    ]
+                                },
+                                "SingleChoiceQuestion": {
+                                    "allOf": [
+                                        { "$ref": "#/definitions/QuestionBase" },
+                                        {
+                                            "properties": {
+                                                "options": { "$ref": "#/definitions/OptionList" },
+                                                "answerIdx": { "type": "integer" }
+                                            },
+                                            "required": [ "options", "answerIdx" ]
+                                        }
+                                    ]
+                                },
+                                "MultiChoiceQuestion": {
+                                    "allOf": [
+                                        { "$ref": "#/definitions/QuestionBase" },
+                                        {
+                                            "properties": {
+                                                "options": { "$ref": "#/definitions/OptionList" },
+                                                "answers": {
+                                                    "type": "array",
+                                                    "items": { "type": "integer" }
+                                                }
+                                            },
+                                            "required": [ "options", "answers" ]
+                                        }
+                                    ]
+                                },
+                                "OptionList": {
+                                    "type": "array",
+                                    "items": { "type": "string" },
+                                    "minItems": 2
+                                }
+                            }
+                        }
+            </div>
+            </div>
+            
+            <div class="slide">
+                <h2>Öröklődés: discriminator bevezetése</h2>
+                
+                <div class="content schema-long">
+                    {
+                        "questionType": "singleChoice",
+                        "text": "Do you have any pets?",
+                        "options": [ "Yes", "No" ],
+                        "answerIdx": 0
+                    },
+                    {
+                        "questionType": "multiChoice",
+                        "What pets do you have?",
+                        "options": [ "Cat", "Dog", "Dragon" ],
+                        "answers": [ 0, 1 ]
+                    }
+                    {
+                        "questionType": "freeText",
+                        "text": "What do your pets eat?",
+                        "answer": "My dog ate my cat so none of them are hungry"
+                    }
+                </div>
+            </div>
+            
+            <div class="slide">
+                <h2>Öröklődés: discriminator kifejezése "const" kulcsszóval</h2>
+                
+                <div class="content schema-long">
+                    {
+                            "definitions": {
+                                "Question": {
+                                    "oneOf": [
+                                        { "$ref": "#/definitions/FreeTextQuestion" },
+                                        { "$ref": "#/definitions/SingleChoiceQuestion" },
+                                        { "$ref": "#/definitions/MultiChoiceQuestion" }
+                                    ]
+                                },
+                                "QuestionBase": {
+                                    "type": "object",
+                                    "properties": {
+                                        "text": { "type": "string" }
+                                    },
+                                    "required": [ "questionType" ]
+                                },
+                                "FreeTextQuestion": {
+                                    "allOf": [
+                                        { "$ref": "#/definitions/QuestionBase" },
+                                        {
+                                            "properties": {
+                                                "answer": { "type": "string" },
+                                                "questionType": { "const": "freeText" }
+                                            },
+                                            "required": [ "answer" ]
+                                        }
+                                    ]
+                                },
+                                "SingleChoiceQuestion": {
+                                    "allOf": [
+                                        { "$ref": "#/definitions/QuestionBase" },
+                                        {
+                                            "properties": {
+                                                "options": { "$ref": "#/definitions/OptionList" },
+                                                "answerIdx": { "type": "integer" },
+                                                "questionType": { "const": "singleChoice" }
+                                            },
+                                            "required": [ "options", "answerIdx" ]
+                                        }
+                                    ]
+                                },
+                                "MultiChoiceQuestion": {
+                                    "allOf": [
+                                        { "$ref": "#/definitions/QuestionBase" },
+                                        {
+                                            "properties": {
+                                                "options": { "$ref": "#/definitions/OptionList" },
+                                                "answers": {
+                                                    "type": "array",
+                                                    "items": { "type": "integer" }
+                                                },
+                                                "questionType": { "const": "multiChoice" }
+                                            },
+                                            "required": [ "options", "answers" ]
+                                        }
+                                    ]
+                                },
+                                "OptionList": {
+                                    "type": "array",
+                                    "items": { "type": "string" },
+                                    "minItems": 2
+                                }
+                            }
+                        }
+                </div>
+            </div>
+            
+            <div class="slide">
+                <h2>dependencies helyett if - then (draft 7)</h2>
+                
+                <div class="content schema-long">
+                   
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "product": { "type": "string" }
+                                    "quantity": { "type": "integer" }
+                                },
+                                "required": ["product", "quantity"]
+                                "if": {
+                                    "anyOf": [
+                                        { "$ref": "#/definitions/hasBillingEntity" }
+                                        { "$ref": "#/definitions/hasBillingAddress" }
+                                    ]
+                                }
+                                "then": {
+                                    "allOf": [
+                                        { "$ref": "#/definitions/hasBillingEntity" }
+                                        { "$ref": "#/definitions/hasBillingAddress" }
+                                    ]
+                                }
+                                "definitions": {
+                                    "hasBillingEntity": { "required": ["billingEntity"] }
+                                    "hasBillingAddress": { "required": ["billingAddress"] }
+                                }
+                            }
+                   
+                </div>
+            </div>
+        
+        
+        <div class="slide example">
+            <h2>readOnly id</h2>
+            
+            <div class="instance">
+                {
+                    "id": 123,
+                    "product": "foo",
+                    "quantity": 2
+                }
+            </div>
+            
+            <div class="schema">
+                {
+                    "definitions": {
+                        "OrderLine": {
+                            "type": "object",
+                            "properties": {
+                                "product": { "type": "string" }
+                                "quantity": { "type": "integer" }
+                            },
+                            "required": ["product", "quantity"]
+                        },
+                        "hasId": {
+                            "required": [ "id" ]
+                        },
+                        "PersistentOrderLine": {
+                            "allOf": [
+                                { "$ref": "#/definitions/OrderLine" },
+                                { "$ref": "#/definitions/hasId" }
+                            ]
+                        },
+                        "TransientOrderLine": {
+                            "allOf": [
+                                { "$ref": "#/definitions/OrderLine" },
+                                { 
+                                    "not": { "$ref": "#/definitions/hasId" }
+                                }
+                            ]
+                        }
+                    }
+                }
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>readOnly id - draft 7</h2>
+            
+            <div class="content schema-long">
+                {
+                    "definitions": {
+                        "OrderLine": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "readOnly": true
+                                },
+                                "product": { "type": "string" }
+                                "quantity": { "type": "integer" }
+                            },
+                            "required": ["product", "quantity"]
+                        }
+                    }
+                }
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>Egyéb annotáció-jellegű séma kulcsszavak</h2>
+            
+            <div class="content">
+            <ul>
+                <li class="keyword">"title"</li>
+                <li class="keyword">"description"</li>
+                <li class="keyword">"examples"</li>
+                <li class="keyword">"default"</li>
+            </ul>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>OpenAPI bevezető</h2>
+            
+            <div class="content">
+                <ul>
+                    <li>egy REST API absztrakt leírása</li>
+                    <li>YAML formátumú</li>
+                    <li>született nevén swagger</li>
+                    <li><a href="https://github.com/OAI/OpenAPI-Specification/blob/master/examples/v3.0/petstore.yaml">PetStore példa</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>Mire jó?</h2>
+            
+            <div class="content">
+                <ul>
+                    <li>specifikáció (szabadszöveges leírás helyett)</li>
+                    <li>dokumentáció</li>
+                    <li>validáció</li>
+                    <li>mock implementáció generálás</li>
+                    <li>szerver/kliens-oldali skeleton generálása</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>OpenAPI alternatívák</h2>
+            
+            <div class="content">
+                <ul>
+                    <li>RAML</li>
+                    <li>API Blueprint</li>
+                    <li>mindkettő kihalt</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>JSON Schema az OpenAPI-ban</h2>
+            
+            <div class="content">
+                <p>"Models are defined using the Schema Object, which is an extended subset of JSON Schema Specification [draft 4]."</p>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>Az OpenAPI schema object-ből hiányoznak</h2>
+            
+            <div class="content">
+                <ul>
+                    <li>a "type" nem lehet tömb<br/> (így a <code>"type": ["object", "null"]</code> nem működik)</li>
+                    <li>tuple validáció nincs</li>
+                    <li>a json sémákat a <code>"#/components/schemas"</code> objektumba kell tenni</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>Csak az OpenAPI schema object-ben vannak</h2>
+            
+            <div class="content">
+                <ul>
+                    <li>további beépített "format" formátumok</li>
+                    <li>"nullable" (boolean) kulcsszó</li>
+                    <li>"readOnly" és "writeOnly" működik</li>
+                    <li>"discriminator" kulcsszó - öröklődés kifejezésében segít<br/>
+                    akkor, ha van olyan kulcs az instance-ban, aminek értéke azonosítja az alosztályt</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2>Köszönöm a figyelmet!</h2>
+            
+            <div class="content">
+                <h1>Q &amp; A</h1>
+            </div>
+        </div>
+        
+        </div>
+    </body>
+</html>
