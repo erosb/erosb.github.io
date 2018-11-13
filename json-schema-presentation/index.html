@@ -310,7 +310,7 @@
             
             <div class="schema">
                 {
-                    "type": ["string", "integer"]
+                    "type": ["string", "integer"],
                     "minimum": 0,
                     "pattern": "^[0-9]+$"
                 }
@@ -357,7 +357,7 @@
                 {
                     "type": "array",
                     "items": [
-                        { "type": "string" }
+                        { "type": "string" },
                         { "type": "integer" }
                     ]
                 }
@@ -381,7 +381,7 @@
                 {
                     "type": "array",
                     "items": [
-                        { "type": "string" }
+                        { "type": "string" },
                         { "type": "integer" }
                     ],
                     "additionalItems": false
@@ -404,8 +404,8 @@
                 {
                     "type": "object",
                     "properties": {
-                        "product": { "type": "string" }
-                        "quantity": { "type": "number" }
+                        "product": { "type": "string" },
+                        "quantity": { "type": "number" },
                         "active": { "type": "boolean" }
                     },
                     "required": ["product", "quantity"],
@@ -432,7 +432,7 @@
                     "minProperties": 1,
                     "maxProperties": 10,
                     "patternProperties": {
-                        "^product[1-9]+$": { "type" : "string" }
+                        "^product[1-9]+$": { "type" : "string" },
                         "^quantity[1-9]+$": { "type" : "integer" }
                     },
                     "propertyNames": { // vagy: "additionalProperties": false
@@ -459,12 +459,12 @@
                 {
                     "type": "object",
                     "properties": {
-                        "product": { "type": "string" }
+                        "product": { "type": "string" },
                         "quantity": { "type": "integer" }
                     },
                     "required": ["product", "quantity"],
                     "dependencies": {
-                        "billingEntity": [ "billingAddress" ]
+                        "billingEntity": [ "billingAddress" ],
                         "billingAddress": [ "billingEntity" ]
                     }
                 }
@@ -501,7 +501,7 @@
                         "type": "object",
                         "properties": {
                             "mykey": {
-                                "type": ["string", "null"]
+                                "type": ["string", "null"],
                                 "minLength": 3
                             }
                         }
@@ -542,7 +542,7 @@
                             "type": "object",
                             "properties": {
                                 "totalPrice": {
-                                    "type": object",
+                                    "type": "object",
                                     "properties": {
                                         "net": {"type": "number"},
                                         "gross": {"type": "number"},
@@ -555,7 +555,7 @@
                                     "type": "array",
                                     "minLength": 1,
                                     "items": {
-                                        "type": object",
+                                        "type": "object",
                                         "properties": {
                                             "lineItem": { "type": "string" },
                                             "quantity": { "type": "integer" },
@@ -609,7 +609,7 @@
                     },
                     "definitions": {
                         "Price": {
-                            "type": object",
+                            "type": "object",
                             "properties": {
                                 "net": {"type": "number"},
                                 "gross": {"type": "number"},
@@ -667,7 +667,7 @@
                             }
                         },
                         "Price": {
-                            "type": object",
+                            "type": "object",
                             "properties": {
                                 "net": {"type": "number"},
                                 "gross": {"type": "number"},
@@ -828,10 +828,10 @@
                         "answerIdx": 0
                     },
                     {
-                        "What pets do you have?",
+                        "text": "What pets do you have?",
                         "options": [ "Cat", "Dog", "Dragon" ],
                         "answers": [ 0, 1 ]
-                    }
+                    },
                     {
                         "text": "What do your pets eat?",
                         "answer": "My dog ate my cat so none of them are hungry"
@@ -845,6 +845,7 @@
             
             <div class="content schema-long">
                         {
+                            "type": "array", "items": {"$ref": "#/definitions/Question"},
                             "definitions": {
                                 "Question": {
                                     "oneOf": [
@@ -911,6 +912,7 @@
                 <h2>Öröklődés: discriminator bevezetése</h2>
                 
                 <div class="content schema-long">
+                [
                     {
                         "questionType": "singleChoice",
                         "text": "Do you have any pets?",
@@ -919,15 +921,16 @@
                     },
                     {
                         "questionType": "multiChoice",
-                        "What pets do you have?",
+                        "text": "What pets do you have?",
                         "options": [ "Cat", "Dog", "Dragon" ],
                         "answers": [ 0, 1 ]
-                    }
+                    },
                     {
                         "questionType": "freeText",
                         "text": "What do your pets eat?",
                         "answer": "My dog ate my cat so none of them are hungry"
                     }
+                ]
                 </div>
             </div>
             
@@ -935,7 +938,8 @@
                 <h2>Öröklődés: discriminator kifejezése "const" kulcsszóval</h2>
                 
                 <div class="content schema-long">
-                    {
+                        {
+                            "type": "array", "items": {"$ref": "#/definitions/Question"},
                             "definitions": {
                                 "Question": {
                                     "oneOf": [

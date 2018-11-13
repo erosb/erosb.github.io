@@ -23,6 +23,10 @@
 
   <div class="wrap">
     
+    <div class="page-links">
+      
+    </div>
+    
     <header class="mb">
       <h1 class="h2 m-0"><a href="/">@erosb about software</a></h1>
       <p class="site-description"></p>
@@ -34,8 +38,6 @@
   <p>After using Docker over a couple of months for managing a development environment locally, I felt a bit tired of repeatedly
 checking the status of the  containers several times each day. So I looked after how can I display the current status of
 the containers in the Conky system monitor.</p>
-
-<p></p>
 
 <p>It turned out that Conky doesn&rsquo;t support Docker out of the box, but it is customizable with its <code>exec</code>-like commands. So
 I started looking after what is the best solution I can achieve from the shell. One option would be to call <code>docker ps</code>

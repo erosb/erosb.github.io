@@ -2,12 +2,14 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>@erosb about software</title>
-    <link>/index.xml</link>
+    <link>/</link>
     <description>Recent content on @erosb about software</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
     <lastBuildDate>Mon, 06 Feb 2017 00:00:00 +0000</lastBuildDate>
-    <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Displaying Docker containers in Conky</title>
@@ -17,33 +19,7 @@
       <guid>/post/docker-containers-in-conky/</guid>
       <description>&lt;p&gt;After using Docker over a couple of months for managing a development environment locally, I felt a bit tired of repeatedly
 checking the status of the  containers several times each day. So I looked after how can I display the current status of
-the containers in the Conky system monitor.&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;p&gt;It turned out that Conky doesn&amp;rsquo;t support Docker out of the box, but it is customizable with its &lt;code&gt;exec&lt;/code&gt;-like commands. So
-I started looking after what is the best solution I can achieve from the shell. One option would be to call &lt;code&gt;docker ps&lt;/code&gt;
-then alter its output using &lt;code&gt;awk&lt;/code&gt; or &lt;code&gt;sed&lt;/code&gt; to extract the information I want to see in Conky. But I wanted a bit cleaner
-approach than that, so I decided to use the Python client library to list the containers. The REST API of the docker engine
-provides all information one will ever need in JSON format, so picking a client library which uses the REST API seemed to
-be a good way to go. I chose python, because it is installed on most linux systems by default, so there is no need to install
-any additional language runtime or compiler to run the script.&lt;/p&gt;
-
-&lt;p&gt;I installed the client library with &lt;code&gt;sudo pip install docker&lt;/code&gt;, then I put the following (executable) python script to &lt;code&gt;/home/erosb/bin/docker-status.py&lt;/code&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;#!/usr/bin/env python
-
-import docker
-client = docker.from_env()
-for container in client.containers.list():
-  print &#39;{:40} {}&#39;.format(container.attrs[&#39;Config&#39;][&#39;Image&#39;], container.status)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And finally I added this single line to my &lt;code&gt;.conkyrc&lt;/code&gt;:&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;${exec /home/erosb/bin/docker-status.py}&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Voila! It just works.&lt;/p&gt;</description>
+the containers in the Conky system monitor.&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -61,35 +37,7 @@ flooding on the screen just harmful for the eyes. Instead we something else in a
 &lt;p&gt;During those (hopefully) short build periods I don&amp;rsquo;t like periodically checking if the build has finished yet, but I want
 to know exactly when it is done. To let myself get notified about it I created a simple wrapper on the top of the &lt;code&gt;mvn&lt;/code&gt;
 command which just pops up a unity system notification on ubuntu after the build. I have been using this utility for
-years, maybe it will be useful for others too.&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;p&gt;So I put a the script below to &lt;code&gt;~/bin/mvn&lt;/code&gt; and I made sure that &lt;code&gt;~/bin/&lt;/code&gt; precedes the maven installation directory on
-the &lt;code&gt;$PATH&lt;/code&gt; (referred as &lt;code&gt;$MVN_HOME/bin&lt;/code&gt; in the script):&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;#!/bin/bash
-
-args=&amp;quot;$*&amp;quot;
-$MVN_HOME/bin/mvn $*
-let x=$?
-if [[ $x -eq 0 ]]; then
-    notify-send --urgency=normal -i &amp;quot;face-laugh&amp;quot; &amp;quot;mvn $args success&amp;quot;
-else
-    notify-send --urgency=normal -i &amp;quot;error&amp;quot; &amp;quot;mvn $args failure&amp;quot;
-fi
-
-exit $x
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This wrapper script runs the real &lt;code&gt;mvn&lt;/code&gt; executable then displays a success or error notification depending on maven&amp;rsquo;s exit
-code, in the top-right corner of the screen. They look like this:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;/img/mvn-success.png&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;/img/mvn-failure.png&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The same trick will probably work for any build tools, since all you need is a command to be wrapped.&lt;/p&gt;</description>
+years, maybe it will be useful for others too.&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -98,37 +46,7 @@ code, in the top-right corner of the screen. They look like this:&lt;/p&gt;
       <pubDate>Sun, 16 Oct 2016 00:00:00 +0000</pubDate>
       
       <guid>/post/being-a-library-maintainer-for-a-year/</guid>
-      <description>
-
-&lt;p&gt;A year passed since the first public version of the &lt;a href=&#34;http://github.com/everit-org/json-schema&#34;&gt;&lt;code&gt;everit-org/json-schema&lt;/code&gt;&lt;/a&gt; library was published on maven central. I think it may be interesting to look back for a summary of what I learned during this year.
-&lt;!-- more --&gt;&lt;/p&gt;
-
-&lt;p&gt;This started out as an unimportant side-project, basically I was simply bored on a Friday evening, and I looked for something to hack.
-I started getting familiar with JSON Schema a few weeks before. I had some concerns with the existing java implementation of the specification, and
-also the schema spec didn&amp;rsquo;t look too difficult, so I thought &amp;ldquo;why not&amp;rdquo;. I started working on a new implementation.&lt;/p&gt;
-
-&lt;p&gt;Now, one year later I don&amp;rsquo;t work for Everit anymore and I don&amp;rsquo;t use the library for any of my current projects. Still I keep maintaining it. You may wonder what makes a library interesting if it is not even closely related to my job, so I make no use of it.&lt;/p&gt;
-
-&lt;p&gt;The most important factor is attention. It is not a very popular library, but still there are a good number of people using it. Userbase matters. Feedback matters, regardless if it is the number of bugreports, pull requests, stars or daily visitors of the GitHub project page. Seeing the value provided by the library is the primary thing that keeps me going on and improving it. We, software engineers, work in an industry where approx. 70% of the projects fail - and such failure happened to me too multiple times in the recent years. After spending countless hours on working on software that never made it to production, it is just stirring to see that this library provides some value for people. This is the #1 reason why I work on it.&lt;/p&gt;
-
-&lt;p&gt;Since its initial release the library gained a lot of attention. Nowadays it isn&amp;rsquo;t simply used by big companies but also utilized by open-source projects like &lt;a href=&#34;https://github.com/SoftInstigate/restheart&#34;&gt;RESTHeart&lt;/a&gt;, &lt;a href=&#34;https://github.com/zalando/nakadi&#34;&gt;Nakadi&lt;/a&gt; or &lt;a href=&#34;https://github.com/apache/nifi&#34;&gt;Apache NiFi&lt;/a&gt;. Yet another thing I&amp;rsquo;m very happy about.&lt;/p&gt;
-
-&lt;p&gt;Another noteworthy motive is the technical &amp;ldquo;fun factor&amp;rdquo;. This started out as one of the first projects in which I can facilitate Java8 language features, and the elegance of multiparadigm programming means a level of convenience that is motivational on its own.&lt;/p&gt;
-
-&lt;h2 id=&#34;lessons-learned&#34;&gt;Lessons learned&lt;/h2&gt;
-
-&lt;p&gt;The most important thing I recognized during the last year is that one can never underestimate the importance of backward-compatibility. Although the library has nearly doubled in lines of code since its first stable version, the most simple usecase supported that time still works as it is put in the &lt;a href=&#34;https://github.com/everit-org/json-schema#quickstart&#34;&gt;quickstart guide&lt;/a&gt;. Version 1.0.0 literally didn&amp;rsquo;t know anything else, just a single method performing a schema validation.&lt;/p&gt;
-
-&lt;p&gt;Of course, the backward-compatibility of the external interface sometimes requires crazy hacks for the internal implementation. But being able to live together with earlier bad design decisions while also delivering new features and bugfixes is just essential if you want your library to be taken seriously. Also, incrementing major version number all the time, just to be permitted to break the API in the name of semantic versioning (and not maintaining earlier versions), is just a very little better than directly breaking the API. Reliability comes from long-term support of compatible versions. This is an essential treshold for any library which is willing to gain attention, therefore should be kept in mind by library developers. As once Linus Torvalds wrote &lt;a href=&#34;https://plus.google.com/115250422803614415116/posts/hMT5kW8LKJk&#34;&gt;&amp;rdquo;&amp;lsquo;we need to do that to improve things&amp;rsquo; is not an excuse&amp;rdquo;&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;Another thing I learned - slightly related to the previous one - is the value of member visibilities. When someone is arguing about why Java has quite baroque visibility rules, he/she will probably come up with reasons like why the client should be considered &amp;ldquo;stupid&amp;rdquo;, how unwanted usage of an API can cause harmful and mysterious bugs, and many other ways of saying that &lt;em&gt;the client shouldn&amp;rsquo;t see this because the client is stupid&lt;/em&gt; . Such reasoning is likely to be felt weak, or even arrogant, and it usually doesn&amp;rsquo;t take too much time until a python guy tells that he never bit himself with python&amp;rsquo;s everything-is-public approach, pointing out the unimportance of defending the client.&lt;/p&gt;
-
-&lt;p&gt;In fact a much more important value that I only understood while working on &lt;code&gt;everit-org/json-schema&lt;/code&gt; is the other direction of protectiveness of visibility rules: it doesn&amp;rsquo;t protect the client from making stupid things, instead &lt;em&gt;it protects the library author from the necessity of maintaining compatibility&lt;/em&gt;. Simply put, if a method is &lt;code&gt;private&lt;/code&gt; (or package-private), I can be sure about that no client code relies on it, therefore I&amp;rsquo;m free to change its behavior, change its name or signature, or I can even remove it. By not exposing it publicly I give myself space and freedom to change it, and over the last one year I found this a much more serious benefit of visibility than protecting clients from directly invoking internal methods.&lt;/p&gt;
-
-&lt;p&gt;Keeping visibility rules in mind is not the only considerable strategy to maintain backward-compatibility. Another thing I found quite useful is not going super-small in library size. Sometimes I can feel that in newer platform ecosystems - especially the ones which consider automated package management as a core feature - a re-occurring problem is that people break up their solutions into too small libraries. It is basically about utilizing the presence of the automated package management and taking a &lt;em&gt;&amp;ldquo;lets go extremely small so clients won&amp;rsquo;t have to include any code that they don&amp;rsquo;t need&amp;rdquo;&lt;/em&gt; approach. This is a wise idea, but it has a harmful side-effect: very small libraries performing a very small piece of job are simply not maintainable. Since they don&amp;rsquo;t really have a massive internal layer which can be a subject of refactoring, small libraries can&amp;rsquo;t adapt, therefore they will go unmaintained, deprecated, or will break compatibility &lt;a href=&#34;https://medium.com/@wob/the-sad-state-of-web-development-1603a861d29f#.c4yplz2xj&#34;&gt;even on a patch level change&lt;/a&gt;. So for library authors I&amp;rsquo;d suggest making a healthy and responsible compromise between going extremely monolithic and extremely modular.&lt;/p&gt;
-
-&lt;p&gt;The last but still interesting things is that the Java6/7 compatibility still matters. My code heavily relies on java8 language features and I was somewhat surprised about how lot of people are asking for/about java6 support. I think this problem will become less and less relevant, and the java6 compatibility requirement will just fade away, but still, it was surprising to see.&lt;/p&gt;
-</description>
+      <description>A year passed since the first public version of the everit-org/json-schema library was published on maven central. I think it may be interesting to look back for a summary of what I learned during this year. This started out as an unimportant side-project, basically I was simply bored on a Friday evening, and I looked for something to hack. I started getting familiar with JSON Schema a few weeks before.</description>
     </item>
     
     <item>
@@ -137,138 +55,7 @@ also the schema spec didn&amp;rsquo;t look too difficult, so I thought &amp;ldqu
       <pubDate>Sat, 14 May 2016 00:00:00 +0000</pubDate>
       
       <guid>/post/json-patch-vs-merge-patch/</guid>
-      <description>
-
-&lt;p&gt;Partly as a side effect of the &lt;code&gt;PATCH&lt;/code&gt; HTTP verb gaining attention in the recent years, people started to come up
-with ideas about representing JSON-driven PATCH formats which declaratively describe differences between two JSON documents.
-The number or home-grew solutions is probably countless, two formats have been published by IETF as RFC documents to solve
-this problem: &lt;a href=&#34;https://tools.ietf.org/html/rfc6902&#34;&gt;RFC 6902 (JSON Patch)&lt;/a&gt; and
-&lt;a href=&#34;https://tools.ietf.org/html/rfc7386&#34;&gt;RFC 7396 (JSON Merge Patch)&lt;/a&gt;. Both have advantages and disadvantages, and none of
-them will fit everybody&amp;rsquo;s usecases, so lets have a quick look at which one to use.
-&lt;!-- more --&gt;&lt;/p&gt;
-
-&lt;h2 id=&#34;json-patch&#34;&gt;JSON Patch&lt;/h2&gt;
-
-&lt;p&gt;The JSON Patch format is similar to a database transaction: it is an array of mutating operations on a JSON document,
-which is executed atomically by a proper implementation. It is basically a series of &lt;code&gt;&amp;quot;add&amp;quot;&lt;/code&gt;, &lt;code&gt;&amp;quot;remove&amp;quot;&lt;/code&gt;, &lt;code&gt;&amp;quot;replace&amp;quot;&lt;/code&gt;,
-&lt;code&gt;&amp;quot;move&amp;quot;&lt;/code&gt; and &lt;code&gt;&amp;quot;copy&amp;quot;&lt;/code&gt; operations.&lt;/p&gt;
-
-&lt;p&gt;As a short example lets consider the following JSON document:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;{
-	&amp;quot;users&amp;quot; : [
-		{ &amp;quot;name&amp;quot; : &amp;quot;Alice&amp;quot; , &amp;quot;email&amp;quot; : &amp;quot;alice@example.org&amp;quot; },
-		{ &amp;quot;name&amp;quot; : &amp;quot;Bob&amp;quot; , &amp;quot;email&amp;quot; : &amp;quot;bob@example.org&amp;quot; }
-	]
-}
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;We can run the following patch on it, which changes Alice&amp;rsquo;s email address then adds a new element to the array:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[
-	{
-		&amp;quot;op&amp;quot; : &amp;quot;replace&amp;quot; ,
-		&amp;quot;path&amp;quot; : &amp;quot;/users/0/email&amp;quot; ,
-		&amp;quot;value&amp;quot; : &amp;quot;alice@wonderland.org&amp;quot;
-	},
-	{
-		&amp;quot;op&amp;quot; : &amp;quot;add&amp;quot; ,
-		&amp;quot;path&amp;quot; : &amp;quot;/users/-&amp;quot; ,
-		&amp;quot;value&amp;quot; : {
-			&amp;quot;name&amp;quot; : &amp;quot;Christine&amp;quot;,
-			&amp;quot;email&amp;quot; : &amp;quot;christine@example.org&amp;quot;
-		}
-	}
-]
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The result will be:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;{
-	&amp;quot;users&amp;quot; : [
-		{ &amp;quot;name&amp;quot; : &amp;quot;Alice&amp;quot; , &amp;quot;email&amp;quot; : &amp;quot;alice@wonderland.org&amp;quot; },
-		{ &amp;quot;name&amp;quot; : &amp;quot;Bob&amp;quot; , &amp;quot;email&amp;quot; : &amp;quot;bob@example.org&amp;quot; },
-		{ &amp;quot;name&amp;quot; : &amp;quot;Christine&amp;quot; , &amp;quot;email&amp;quot; : &amp;quot;christine@example.org&amp;quot; }
-	]
-}
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;So the outline of the operations described in a JSON Patch is&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;the &lt;code&gt;&amp;quot;op&amp;quot;&lt;/code&gt; key denotes operation&lt;/li&gt;
-&lt;li&gt;the arguments of the operation are described by the other keys&lt;/li&gt;
-&lt;li&gt;there is always a &lt;code&gt;&amp;quot;path&amp;quot;&lt;/code&gt; argument, which is JSON Pointer pointing to the document fragment which is the target of the operation&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;An interesting option of the JSON Patch specification is its &lt;code&gt;&amp;quot;test&amp;quot;&lt;/code&gt; operator: its evaluation doesn&amp;rsquo;t come with any side
-effects, so it isn&amp;rsquo;t a data manipulating operator. Instead it can be used to describe assertions on the document at
-given points of the JSON Patch execution. If the &lt;code&gt;&amp;quot;test&amp;quot;&lt;/code&gt; evaluates to false then an error occurs, subsequent operations
-won&amp;rsquo;t be executed, and the document is rolled back to its initial state. I think the &lt;code&gt;&amp;quot;test&amp;quot;&lt;/code&gt; can be useful for checking
-preconditions before a patch execution or may be a safety net to check at the end of execution if everything looks all
-right. Patches are run atomically by implementations therefore if a &lt;code&gt;&amp;quot;test&amp;quot;&lt;/code&gt; finds inconsistency in the document then you can
-safely assume that the document is still in consistent (initial) state after patch failure.&lt;/p&gt;
-
-&lt;h2 id=&#34;json-merge-patch&#34;&gt;JSON Merge Patch&lt;/h2&gt;
-
-&lt;p&gt;Alongside JSON Patch there is an other JSON-based format, &lt;a href=&#34;https://tools.ietf.org/html/rfc7386&#34;&gt;JSON Merge Patch - RFC 7386&lt;/a&gt; ,
-which can be used more or less for the same purpose, ie. it describes a changed version of a JSON document. The conceptual
-difference compared to JSON Patch is that JSON Merge Patch is similar to a diff file. It simply contains the nodes of the
-document which should be different after execution.&lt;/p&gt;
-
-&lt;p&gt;As a quick example (&lt;a href=&#34;https://tools.ietf.org/html/rfc7386#section-1&#34;&gt;taken from the spec&lt;/a&gt;) if we have the following document:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;{
-	&amp;quot;a&amp;quot;: &amp;quot;b&amp;quot;,
-	&amp;quot;c&amp;quot;: {
-		&amp;quot;d&amp;quot;: &amp;quot;e&amp;quot;,
-		&amp;quot;f&amp;quot;: &amp;quot;g&amp;quot;
-	}
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Then we can run the following patch on it:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;{
-	&amp;quot;a&amp;quot;:&amp;quot;z&amp;quot;,
-	&amp;quot;c&amp;quot;: {
-		&amp;quot;f&amp;quot;: null
-	}
-}
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;which will change the value of &lt;code&gt;&amp;quot;a&amp;quot;&lt;/code&gt; to &lt;code&gt;&amp;quot;z&amp;quot;&lt;/code&gt; and will delete the &lt;code&gt;&amp;quot;f&amp;quot;&lt;/code&gt; key.&lt;/p&gt;
-
-&lt;p&gt;The simplicity of the format may look first promising at the first glance, since most probably anyone understanding
-the schema of the original document will also instantly understand a merge patch document too. It is just a standardization
-of one may naturally call a patch of a JSON document.&lt;/p&gt;
-
-&lt;p&gt;But this simplicity comes with some limitations:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Deletion happens by setting a key to &lt;code&gt;null&lt;/code&gt;. This inherently means that it isn&amp;rsquo;t possible to change a key&amp;rsquo;s value to
-&lt;code&gt;null&lt;/code&gt;, since such modification cannot be described by a merge patch document.&lt;/li&gt;
-&lt;li&gt;Arrays cannot be manipulated by merge patches. If you want to add an element to an array, or mutate any of its elements
-then you have to include the entire array in the merge patch document, even if the actually changed parts is minimal.&lt;/li&gt;
-&lt;li&gt;the execution of a merge patch document never results in error. Any malformed patch will be merged, so it is a very liberal
-format. It is not necessarily good, since you will probably need to perform programmatic check after merge, or run a JSON
-Schema validation after the merge.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
-
-&lt;p&gt;JSON Merge Patch is a naively simple format, with limited usability. Probably it is a good choice if you are building something
-small, with very simple JSON Schema, but you want offer a quickly understandable, more or less working method for clients
-to update JSON documents. A REST API designed for public consumption but without appropriate client libraries might be
-a good example.&lt;/p&gt;
-
-&lt;p&gt;For more complex usecases I&amp;rsquo;d pick JSON Patch, since it is applicable to any JSON documents (unline merge patch, which is
-not able to set keys to &lt;code&gt;null&lt;/code&gt;). The specification also ensures atomic execution and robust error reporting.&lt;/p&gt;
-</description>
+      <description>Partly as a side effect of the PATCH HTTP verb gaining attention in the recent years, people started to come up with ideas about representing JSON-driven PATCH formats which declaratively describe differences between two JSON documents. The number or home-grew solutions is probably countless, two formats have been published by IETF as RFC documents to solve this problem: RFC 6902 (JSON Patch) and RFC 7396 (JSON Merge Patch). Both have advantages and disadvantages, and none of them will fit everybody&amp;rsquo;s usecases, so lets have a quick look at which one to use.</description>
     </item>
     
     <item>
@@ -277,8 +64,7 @@ not able to set keys to &lt;code&gt;null&lt;/code&gt;). The specification also e
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/post/control-your-json/</guid>
-      <description>&lt;p&gt;Baeldung json articles reader writer view control raml example testing&lt;/p&gt;
-</description>
+      <description>Baeldung json articles reader writer view control raml example testing</description>
     </item>
     
     <item>
