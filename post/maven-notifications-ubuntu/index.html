@@ -23,10 +23,6 @@
 
   <div class="wrap">
     
-    <div class="page-links">
-      
-    </div>
-    
     <header class="mb">
       <h1 class="h2 m-0"><a href="/">@erosb about software</a></h1>
       <p class="site-description"></p>
@@ -37,18 +33,14 @@
   <h1><a href="/post/maven-notifications-ubuntu/" title="System notifications for Maven on Ubuntu">System notifications for Maven on Ubuntu</a></h1>
   <p>Builds can be slow and sloppy. If your job involves executing maven builds frequently during your work - and if you are a
 java developer than most probably you do so - then you spend significant time on waiting for build jobs.</p>
-
 <p>Of curse we usually don&rsquo;t just stare at the console, waiting for the maven build to finish, at least because the log messages
 flooding on the screen just harmful for the eyes. Instead we something else in an other window.</p>
-
 <p>During those (hopefully) short build periods I don&rsquo;t like periodically checking if the build has finished yet, but I want
 to know exactly when it is done. To let myself get notified about it I created a simple wrapper on the top of the <code>mvn</code>
 command which just pops up a unity system notification on ubuntu after the build. I have been using this utility for
 years, maybe it will be useful for others too.</p>
-
 <p>So I put a the script below to <code>~/bin/mvn</code> and I made sure that <code>~/bin/</code> precedes the maven installation directory on
 the <code>$PATH</code> (referred as <code>$MVN_HOME/bin</code> in the script):</p>
-
 <pre><code>#!/bin/bash
 
 args=&quot;$*&quot;
@@ -61,15 +53,10 @@ else
 fi
 
 exit $x
-</code></pre>
-
-<p>This wrapper script runs the real <code>mvn</code> executable then displays a success or error notification depending on maven&rsquo;s exit
+</code></pre><p>This wrapper script runs the real <code>mvn</code> executable then displays a success or error notification depending on maven&rsquo;s exit
 code, in the top-right corner of the screen. They look like this:</p>
-
-<p><img src="/img/mvn-success.png" /></p>
-
-<p><img src="/img/mvn-failure.png" /></p>
-
+<p><!-- raw HTML omitted --></p>
+<p><!-- raw HTML omitted --></p>
 <p>The same trick will probably work for any build tools, since all you need is a command to be wrapped.</p>
   <p class="small gray"><time datetime="2017-01-24">Jan 24, 2017</time></p>
 </article>

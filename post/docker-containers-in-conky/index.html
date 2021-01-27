@@ -23,10 +23,6 @@
 
   <div class="wrap">
     
-    <div class="page-links">
-      
-    </div>
-    
     <header class="mb">
       <h1 class="h2 m-0"><a href="/">@erosb about software</a></h1>
       <p class="site-description"></p>
@@ -38,7 +34,6 @@
   <p>After using Docker over a couple of months for managing a development environment locally, I felt a bit tired of repeatedly
 checking the status of the  containers several times each day. So I looked after how can I display the current status of
 the containers in the Conky system monitor.</p>
-
 <p>It turned out that Conky doesn&rsquo;t support Docker out of the box, but it is customizable with its <code>exec</code>-like commands. So
 I started looking after what is the best solution I can achieve from the shell. One option would be to call <code>docker ps</code>
 then alter its output using <code>awk</code> or <code>sed</code> to extract the information I want to see in Conky. But I wanted a bit cleaner
@@ -46,21 +41,15 @@ approach than that, so I decided to use the Python client library to list the co
 provides all information one will ever need in JSON format, so picking a client library which uses the REST API seemed to
 be a good way to go. I chose python, because it is installed on most linux systems by default, so there is no need to install
 any additional language runtime or compiler to run the script.</p>
-
 <p>I installed the client library with <code>sudo pip install docker</code>, then I put the following (executable) python script to <code>/home/erosb/bin/docker-status.py</code>:</p>
-
 <pre><code>#!/usr/bin/env python
 
 import docker
 client = docker.from_env()
 for container in client.containers.list():
   print '{:40} {}'.format(container.attrs['Config']['Image'], container.status)
-</code></pre>
-
-<p>And finally I added this single line to my <code>.conkyrc</code>:</p>
-
+</code></pre><p>And finally I added this single line to my <code>.conkyrc</code>:</p>
 <p><code>${exec /home/erosb/bin/docker-status.py}</code></p>
-
 <p>Voila! It just works.</p>
   <p class="small gray"><time datetime="2017-02-06">Feb 06, 2017</time></p>
 </article>
