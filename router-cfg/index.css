@@ -1,0 +1,18 @@
+body {
+    width: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.block-3 {
+    width: 33%;
+    display: inline-block;
+}
+
+.block-3 label {
+    display: block
+}
+
+#cnt-warnings {
+    background-color: lightyellow;
+    color: brown
+}
