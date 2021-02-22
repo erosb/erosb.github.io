@@ -270,9 +270,9 @@ function main(prog, vars) {
 }
 
 function mainWithWarnings(prog, vars) {
-    let error;
+    let error, output;
     try {
-        let output = main(prog, vars);
+        output = main(prog, vars);
     } catch (err) {
         console.error(err)
         error = err;
