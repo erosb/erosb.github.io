@@ -8,36 +8,33 @@
   </url>
   
   <url>
-    <loc>/post/docker-containers-in-conky/</loc>
+    <loc>/docker-containers-in-conky/</loc>
     <lastmod>2017-02-06T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/post/</loc>
-    <lastmod>2017-02-06T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/maven-notifications-ubuntu/</loc>
+    <loc>/maven-notifications-ubuntu/</loc>
     <lastmod>2017-01-24T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/post/being-a-library-maintainer-for-a-year/</loc>
+    <loc>/being-a-library-maintainer-for-a-year/</loc>
     <lastmod>2016-10-16T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/post/json-patch-vs-merge-patch/</loc>
+    <loc>/json-patch-vs-merge-patch/</loc>
     <lastmod>2016-05-14T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/post/control-your-json/</loc>
+    <loc>/control-your-json/</loc>
+    <priority>0</priority>
   </url>
   
   <url>
-    <loc>/post/okhttp-best-practices/</loc>
+    <loc>/okhttp-best-practices/</loc>
+    <priority>0</priority>
   </url>
   
   <url>

@@ -13,10 +13,10 @@
     
     <item>
       <title>Displaying Docker containers in Conky</title>
-      <link>/post/docker-containers-in-conky/</link>
+      <link>/docker-containers-in-conky/</link>
       <pubDate>Mon, 06 Feb 2017 00:00:00 +0000</pubDate>
       
-      <guid>/post/docker-containers-in-conky/</guid>
+      <guid>/docker-containers-in-conky/</guid>
       <description>&lt;p&gt;After using Docker over a couple of months for managing a development environment locally, I felt a bit tired of repeatedly
 checking the status of the  containers several times each day. So I looked after how can I display the current status of
 the containers in the Conky system monitor.&lt;/p&gt;</description>
@@ -24,10 +24,10 @@ the containers in the Conky system monitor.&lt;/p&gt;</description>
     
     <item>
       <title>System notifications for Maven on Ubuntu</title>
-      <link>/post/maven-notifications-ubuntu/</link>
+      <link>/maven-notifications-ubuntu/</link>
       <pubDate>Tue, 24 Jan 2017 00:00:00 +0000</pubDate>
       
-      <guid>/post/maven-notifications-ubuntu/</guid>
+      <guid>/maven-notifications-ubuntu/</guid>
       <description>&lt;p&gt;Builds can be slow and sloppy. If your job involves executing maven builds frequently during your work - and if you are a
 java developer than most probably you do so - then you spend significant time on waiting for build jobs.&lt;/p&gt;
 &lt;p&gt;Of curse we usually don&amp;rsquo;t just stare at the console, waiting for the maven build to finish, at least because the log messages
@@ -40,38 +40,38 @@ years, maybe it will be useful for others too.&lt;/p&gt;</description>
     
     <item>
       <title>Being a library maintainer for a year</title>
-      <link>/post/being-a-library-maintainer-for-a-year/</link>
+      <link>/being-a-library-maintainer-for-a-year/</link>
       <pubDate>Sun, 16 Oct 2016 00:00:00 +0000</pubDate>
       
-      <guid>/post/being-a-library-maintainer-for-a-year/</guid>
+      <guid>/being-a-library-maintainer-for-a-year/</guid>
       <description>A year passed since the first public version of the everit-org/json-schema library was published on maven central. I think it may be interesting to look back for a summary of what I learned during this year.
 This started out as an unimportant side-project, basically I was simply bored on a Friday evening, and I looked for something to hack. I started getting familiar with JSON Schema a few weeks before. I had some concerns with the existing java implementation of the specification, and also the schema spec didn&amp;rsquo;t look too difficult, so I thought &amp;ldquo;why not&amp;rdquo;.</description>
     </item>
     
     <item>
       <title>JSON Patch and JSON Merge Patch</title>
-      <link>/post/json-patch-vs-merge-patch/</link>
+      <link>/json-patch-vs-merge-patch/</link>
       <pubDate>Sat, 14 May 2016 00:00:00 +0000</pubDate>
       
-      <guid>/post/json-patch-vs-merge-patch/</guid>
+      <guid>/json-patch-vs-merge-patch/</guid>
       <description>Partly as a side effect of the PATCH HTTP verb gaining attention in the recent years, people started to come up with ideas about representing JSON-driven PATCH formats which declaratively describe differences between two JSON documents. The number or home-grew solutions is probably countless, two formats have been published by IETF as RFC documents to solve this problem: RFC 6902 (JSON Patch) and RFC 7396 (JSON Merge Patch). Both have advantages and disadvantages, and none of them will fit everybody&amp;rsquo;s usecases, so lets have a quick look at which one to use.</description>
     </item>
     
     <item>
       <title></title>
-      <link>/post/control-your-json/</link>
+      <link>/control-your-json/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/post/control-your-json/</guid>
+      <guid>/control-your-json/</guid>
       <description>Baeldung json articles reader writer view control raml example testing</description>
     </item>
     
     <item>
       <title></title>
-      <link>/post/okhttp-best-practices/</link>
+      <link>/okhttp-best-practices/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/post/okhttp-best-practices/</guid>
+      <guid>/okhttp-best-practices/</guid>
       <description></description>
     </item>
     

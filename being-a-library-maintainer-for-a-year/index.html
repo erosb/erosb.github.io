@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en-gb">
+<head>
+  <meta charset="utf-8">
+  <title>@erosb about software</title>
+  <meta name="author" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="icon" href="/favicon.png" />
+  <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png" />
+
+  
+  <link rel="stylesheet" href="/css/stylesheet.css" />
+  
+  
+
+</head>
+
+<body class="">
+  
+
+  <div class="wrap">
+    
+    <header class="mb">
+      <h1 class="h2 m-0"><a href="/">@erosb about software</a></h1>
+      <p class="site-description"></p>
+    </header>
+
+<main>
+<article class="post">
+  <h1><a href="/being-a-library-maintainer-for-a-year/" title="Being a library maintainer for a year">Being a library maintainer for a year</a></h1>
+  <p>A year passed since the first public version of the <a href="http://github.com/everit-org/json-schema"><code>everit-org/json-schema</code></a> library was published on maven central. I think it may be interesting to look back for a summary of what I learned during this year.</p>
+<!-- raw HTML omitted -->
+<p>This started out as an unimportant side-project, basically I was simply bored on a Friday evening, and I looked for something to hack.
+I started getting familiar with JSON Schema a few weeks before. I had some concerns with the existing java implementation of the specification, and
+also the schema spec didn&rsquo;t look too difficult, so I thought &ldquo;why not&rdquo;. I started working on a new implementation.</p>
+<p>Now, one year later I don&rsquo;t work for Everit anymore and I don&rsquo;t use the library for any of my current projects. Still I keep maintaining it. You may wonder what makes a library interesting if it is not even closely related to my job, so I make no use of it.</p>
+<p>The most important factor is attention. It is not a very popular library, but still there are a good number of people using it. Userbase matters. Feedback matters, regardless if it is the number of bugreports, pull requests, stars or daily visitors of the GitHub project page. Seeing the value provided by the library is the primary thing that keeps me going on and improving it. We, software engineers, work in an industry where approx. 70% of the projects fail - and such failure happened to me too multiple times in the recent years. After spending countless hours on working on software that never made it to production, it is just stirring to see that this library provides some value for people. This is the #1 reason why I work on it.</p>
+<p>Since its initial release the library gained a lot of attention. Nowadays it isn&rsquo;t simply used by big companies but also utilized by open-source projects like <a href="https://github.com/SoftInstigate/restheart">RESTHeart</a>, <a href="https://github.com/zalando/nakadi">Nakadi</a> or <a href="https://github.com/apache/nifi">Apache NiFi</a>. Yet another thing I&rsquo;m very happy about.</p>
+<p>Another noteworthy motive is the technical &ldquo;fun factor&rdquo;. This started out as one of the first projects in which I can facilitate Java8 language features, and the elegance of multiparadigm programming means a level of convenience that is motivational on its own.</p>
+<h2 id="lessons-learned">Lessons learned</h2>
+<p>The most important thing I recognized during the last year is that one can never underestimate the importance of backward-compatibility. Although the library has nearly doubled in lines of code since its first stable version, the most simple usecase supported that time still works as it is put in the <a href="https://github.com/everit-org/json-schema#quickstart">quickstart guide</a>. Version 1.0.0 literally didn&rsquo;t know anything else, just a single method performing a schema validation.</p>
+<p>Of course, the backward-compatibility of the external interface sometimes requires crazy hacks for the internal implementation. But being able to live together with earlier bad design decisions while also delivering new features and bugfixes is just essential if you want your library to be taken seriously. Also, incrementing major version number all the time, just to be permitted to break the API in the name of semantic versioning (and not maintaining earlier versions), is just a very little better than directly breaking the API. Reliability comes from long-term support of compatible versions. This is an essential treshold for any library which is willing to gain attention, therefore should be kept in mind by library developers. As once Linus Torvalds wrote <a href="https://plus.google.com/115250422803614415116/posts/hMT5kW8LKJk">&quot;&lsquo;we need to do that to improve things&rsquo; is not an excuse&rdquo;</a>.</p>
+<p>Another thing I learned - slightly related to the previous one - is the value of member visibilities. When someone is arguing about why Java has quite baroque visibility rules, he/she will probably come up with reasons like why the client should be considered &ldquo;stupid&rdquo;, how unwanted usage of an API can cause harmful and mysterious bugs, and many other ways of saying that <em>the client shouldn&rsquo;t see this because the client is stupid</em> . Such reasoning is likely to be felt weak, or even arrogant, and it usually doesn&rsquo;t take too much time until a python guy tells that he never bit himself with python&rsquo;s everything-is-public approach, pointing out the unimportance of defending the client.</p>
+<p>In fact a much more important value that I only understood while working on <code>everit-org/json-schema</code> is the other direction of protectiveness of visibility rules: it doesn&rsquo;t protect the client from making stupid things, instead <em>it protects the library author from the necessity of maintaining compatibility</em>. Simply put, if a method is <code>private</code> (or package-private), I can be sure about that no client code relies on it, therefore I&rsquo;m free to change its behavior, change its name or signature, or I can even remove it. By not exposing it publicly I give myself space and freedom to change it, and over the last one year I found this a much more serious benefit of visibility than protecting clients from directly invoking internal methods.</p>
+<p>Keeping visibility rules in mind is not the only considerable strategy to maintain backward-compatibility. Another thing I found quite useful is not going super-small in library size. Sometimes I can feel that in newer platform ecosystems - especially the ones which consider automated package management as a core feature - a re-occurring problem is that people break up their solutions into too small libraries. It is basically about utilizing the presence of the automated package management and taking a <em>&ldquo;lets go extremely small so clients won&rsquo;t have to include any code that they don&rsquo;t need&rdquo;</em> approach. This is a wise idea, but it has a harmful side-effect: very small libraries performing a very small piece of job are simply not maintainable. Since they don&rsquo;t really have a massive internal layer which can be a subject of refactoring, small libraries can&rsquo;t adapt, therefore they will go unmaintained, deprecated, or will break compatibility <a href="https://medium.com/@wob/the-sad-state-of-web-development-1603a861d29f#.c4yplz2xj">even on a patch level change</a>. So for library authors I&rsquo;d suggest making a healthy and responsible compromise between going extremely monolithic and extremely modular.</p>
+<p>The last but still interesting things is that the Java6/7 compatibility still matters. My code heavily relies on java8 language features and I was somewhat surprised about how lot of people are asking for/about java6 support. I think this problem will become less and less relevant, and the java6 compatibility requirement will just fade away, but still, it was surprising to see.</p>
+
+  <p class="small gray"><time datetime="2016-10-16">Oct 16, 2016</time></p>
+</article>
+</main>
+
+<div id="disqus_thread"></div>
+<script>
+    (function() {  
+        var d = document, s = d.createElement('script');
+        
+        s.src = '//erosb-github.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-77857661-1', 'auto');
+  ga('send', 'pageview');
+</script>
+

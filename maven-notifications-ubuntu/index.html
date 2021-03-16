@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en-gb">
+<head>
+  <meta charset="utf-8">
+  <title>@erosb about software</title>
+  <meta name="author" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="icon" href="/favicon.png" />
+  <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png" />
+
+  
+  <link rel="stylesheet" href="/css/stylesheet.css" />
+  
+  
+
+</head>
+
+<body class="">
+  
+
+  <div class="wrap">
+    
+    <header class="mb">
+      <h1 class="h2 m-0"><a href="/">@erosb about software</a></h1>
+      <p class="site-description"></p>
+    </header>
+
+<main>
+<article class="post">
+  <h1><a href="/maven-notifications-ubuntu/" title="System notifications for Maven on Ubuntu">System notifications for Maven on Ubuntu</a></h1>
+  <p>Builds can be slow and sloppy. If your job involves executing maven builds frequently during your work - and if you are a
+java developer than most probably you do so - then you spend significant time on waiting for build jobs.</p>
+<p>Of curse we usually don&rsquo;t just stare at the console, waiting for the maven build to finish, at least because the log messages
+flooding on the screen just harmful for the eyes. Instead we something else in an other window.</p>
+<p>During those (hopefully) short build periods I don&rsquo;t like periodically checking if the build has finished yet, but I want
+to know exactly when it is done. To let myself get notified about it I created a simple wrapper on the top of the <code>mvn</code>
+command which just pops up a unity system notification on ubuntu after the build. I have been using this utility for
+years, maybe it will be useful for others too.</p>
+<p>So I put a the script below to <code>~/bin/mvn</code> and I made sure that <code>~/bin/</code> precedes the maven installation directory on
+the <code>$PATH</code> (referred as <code>$MVN_HOME/bin</code> in the script):</p>
+<pre><code>#!/bin/bash
+
+args=&quot;$*&quot;
+$MVN_HOME/bin/mvn $*
+let x=$?
+if [[ $x -eq 0 ]]; then
+    notify-send --urgency=normal -i &quot;face-laugh&quot; &quot;mvn $args success&quot;
+else
+    notify-send --urgency=normal -i &quot;error&quot; &quot;mvn $args failure&quot;
+fi
+
+exit $x
+</code></pre><p>This wrapper script runs the real <code>mvn</code> executable then displays a success or error notification depending on maven&rsquo;s exit
+code, in the top-right corner of the screen. They look like this:</p>
+<p><!-- raw HTML omitted --></p>
+<p><!-- raw HTML omitted --></p>
+<p>The same trick will probably work for any build tools, since all you need is a command to be wrapped.</p>
+  <p class="small gray"><time datetime="2017-01-24">Jan 24, 2017</time></p>
+</article>
+</main>
+
+<div id="disqus_thread"></div>
+<script>
+    (function() {  
+        var d = document, s = d.createElement('script');
+        
+        s.src = '//erosb-github.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-77857661-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
