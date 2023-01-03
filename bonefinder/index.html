@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Kutyakereső</title>
+    <script type="text/javascript">window.exports = {}</script>
+    <script type="module" src="./build/app-bundle.js">
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        type="text/css" />
+    <style type="text/css">
+        .body, body {
+            background-color: #f5dfbf;
+            height: 100%;
+            bottom: 0;
+            margin: 0
+        }
+
+        #program-steps {
+            height: 100%;
+            vertical-align: middle;
+        }
+
+        #program-steps i {
+            color: #64321f;
+            font-size: 200%;
+        }
+
+        .map {
+            width: 100%;
+            margin-left: 20%;
+        }
+
+        .map>div {
+            width: 7.2vh;
+            height: 7.2vh;
+            vertical-align: middle;
+            background-color: antiquewhite;
+            border-radius: 5px;
+            display: inline-block;
+            position: fixed;
+            left: 0;
+            top: 40%;
+            margin-left: 200px;
+            border: 3px solid #cd9f84
+        }
+
+        .map .dog,
+        .map .bone,
+        .map .visited,
+        .map .key,
+        .map .gate,
+        .map .none {
+            font-size: 5.2vh;
+            text-align: center;
+            vertical-align: middle;
+            color: #c47944;
+            margin-top: 0.2em
+        }
+
+        .map .none {
+            visibility: hidden;
+        }
+
+        .map .visited {
+            color: #be8e6b;
+            font-size: 4.2vh;
+        }
+
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 0.8vmin 1.6vmin;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1.6vmin;
+        }
+
+        #program-steps {
+            letter-spacing: 0.5em;
+        }
+
+        .bottom-cnt {
+            position: absolute;
+            bottom: 0px;
+            width: 100%;
+            float: right;
+            text-align: right;
+            left: 0;
+            height: 5vmin;
+            background-color: rgb(233, 199, 157);
+            vertical-align: middle;
+        }
+
+        .bottom-cnt select {
+            margin-top: 0.5vmin;
+            margin-right: 3vmin;
+            border: 1px solid brown;
+            background-color:  #be8e6b;
+            font-size: 140%;
+            color: #64321f;
+            padding: .1em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="body">
+        <div class="program-cnt">
+            <div id="direction-input-cnt">
+                <div>
+                    <table style="float: left">
+                        <tr>
+                            <td></td>
+                            <td>
+                                <button id="add-up">
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                </button>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button id="add-left">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                </button>
+                            </td>
+                            <td></td>
+                            <td>
+                                <button id="add-right">
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <button id="add-down">
+                                    <i class="fa-solid fa-arrow-down"></i>
+                                </button>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div id="program-steps"></div>
+
+            <div class="execute-cnt" style="float: right">
+                <button id="btn-execute" value="OK">
+                    OK
+                </button>
+            </div>
+        </div>
+
+        <div style="clear: both"></div>
+
+        <div class="map" id="map">
+        </div>
+        <div class="bottom-cnt">
+            <select id="map-selector">
+            </select>
+        </div>
+    </div>
+</body>
+
+</html>
